@@ -1,0 +1,83 @@
+.user_form{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    padding: 23px;
+    width: 300px;
+    border: 2px solid white;
+    background-color: rgba(218, 18, 15, 0.516);
+    border-radius: 13px;
+}
+input{
+    padding: 12px;
+        border-radius: 5px;
+        margin: auto;
+        display: flex;
+        font-size: 21px;
+}
+.user_form > button{
+    display: block;
+    margin: auto;
+    padding: 4px 12px;
+    margin-top: 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.user_detail{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.user_detail>button{
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.user_detail>h4{
+    font-size: 21px;
+}
+.join_room{
+    padding: 4px 8px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-size: 21px;
+    border-radius: 12px;
+    color: rgb(16, 15, 15);
+}
+h1,h2,h3{
+    color: aliceblue;
+}
+
+.webrtc_template{
+
+  padding: 12px;
+  border-radius: 8px;
+ 
+  border: 2px solid white;
+
+}
+.video_wrappers{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    align-items: center;
+    justify-content: space-around;
+    gap: 12px;
+}
+
+.video{
+width: 100%;
+height:auto;
+border-radius: 12px;
+}
+.name_video>h1{
+
+}
+.user_form>input{
+    width: 90%;
+    border: 2px solid red;
+}

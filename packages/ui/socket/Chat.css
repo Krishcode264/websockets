@@ -1,0 +1,70 @@
+.char_room_wrapper{
+    outline: 2px solid rgb(102, 68, 195);
+    border-radius: 8px;
+    padding: 4px 8px 5px;
+    width:400px;
+    position: relative;
+    background-color: rgb(43, 22, 126);
+
+}
+.char_room_wrapper:hover{
+
+    filter: brightness(0.9);
+}
+.char_room_wrapper:hover .enter_button {
+  filter: brightness(100%);
+}
+
+
+span{
+    background-color: chocolate;
+    padding: 5px;
+    font-size: 20px;
+    border-radius: 4px;
+    letter-spacing: 1.1px;
+}
+.char_room_wrapper > section{
+background-color: rgb(59, 59, 180);
+padding: 12px;
+border-radius: 2px;
+
+}
+main{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap :10px 10px;
+}
+.audiance_type{
+    display: flex;
+     justify-content: space-around;
+    padding: 8px;
+    border-radius: 2px;
+    margin-top: 10px;
+}
+.audiance_type>div{
+    padding: 4px;
+    background-color: rgb(214, 59, 59);
+      border-radius: 2px;
+
+}
+.enter_button{
+  
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  filter: brightness(1);
+   width: 40px;
+   height: 40px;
+    background-color: rgb(166, 196, 214);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.enter_button:hover{
+  
+     cursor: pointer;
+    background-color: rgb(22, 126, 29);
+}

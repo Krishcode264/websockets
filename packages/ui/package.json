@@ -13,9 +13,14 @@
     "@types/node": "^20.5.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/uuid": "^9.0.7",
     "eslint-config-custom": "*",
     "react": "^18.2.0",
     "tsconfig": "*",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2",
+    "uuid": "^9.0.1"
   }
 }

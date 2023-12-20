@@ -1,0 +1,45 @@
+.head , video-room>p {
+  color: whitesmoke;
+}
+.section>p {
+  color: whitesmoke;
+}
+
+
+.section{
+    /* border: 1px solid red; */
+    width: 250px;
+    height: 120px;
+    margin-top: 20px;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+ background-color: rgb(97, 97, 137);
+
+}
+.rooms-wrapper{
+    display: flex;
+
+    justify-content: center;
+    gap: 20px;
+}
+.enter-room-btn{
+    border-radius: 3px;
+    padding: 8px ;
+   font-size: larger;
+   cursor: pointer;
+   color: black;
+     display: block;
+  /* cursor: pointer;
+  color: rgba(70, 7, 158, 0.879);
+  background-color: rgba(218, 171, 31, 0.874); */
+}
+.enter-room-btn:hover{
+
+outline: 2px solid rgb(126, 13, 144);
+
+}
+
