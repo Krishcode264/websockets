@@ -3,12 +3,10 @@ import { Socket } from "socket.io";
 import http from "http";
 import  socketIO from "socket.io";
 import cors from "cors";
-import express from "express";
-const app = express();
 import { Server } from "socket.io";
-const httpServer = http.createServer(app);
+const httpServer = http.createServer();
 //to allow cross origin policy so that it can accept request from any url
-app.use(cors());
+
 const io = new Server(httpServer, { path: "/socket" });
 
 let activeUsers = new Map();
