@@ -6,23 +6,24 @@ import io from "socket.io-client";
 import WebrtcConnection from "./WebrtcConnection";
 import { UserDetail } from "./UserDetail";
 import { UserForm } from "./UserForm";
-import { User } from "../types/types";
-import { Offer } from "../types/types";
-import { Candidate } from "../types/types";
+import { User } from "ui/types/types";
+import { Offer } from "ui/types/types";
+import { Candidate } from "ui/types/types";
 import { Socket } from "socket.io-client";
+import Call from "./Call";
 
+export type offer = { sdp?: string; type: "offer" };
 export const Meet = () => {
+  type ConnectedUsers = User[] | [];
 
-  type ConnectedUsers=User[]|[];
   const [showform, setShowForm] = useState<boolean>(false);
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUsers>([]);
-  const [user, setUser] = useState<User>({ name: "", id: "", socketID: null });
-  const [socket, setSocket] = useState<Socket|null>(
-    null
-  );
+  const [user, setUser] = useState<User>({ name: "", id: "" });
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [showWEBrtcConnection, setShowWEBrtcConnection] = useState(false);
-
   const [persontoHandshake, setPersontoHandshake] = useState<User | null>(null);
+  const [showCall, setShowCall] = useState(false);
+  const [offer, setOffer] = useState<offer | null>(null);
   const configForPeerconnection = {
     echoCancellation: true,
     iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
@@ -31,22 +32,22 @@ export const Meet = () => {
     new RTCPeerConnection(configForPeerconnection)
   );
 
-  peerConnection.onicegatheringstatechange = () => {
-    console.log("ICE gathering state:", peerConnection.iceGatheringState);
+//  peerConnection.onicegatheringstatechange = () => {
+//     console.log("ICE gathering state:", peerConnection.iceGatheringState);
 
-    if (peerConnection.iceGatheringState === "complete") {
-      // ICE gathering is complete, check if any candidates were gathered
-      const localCandidates =
-        peerConnection.localDescription?.sdp.match(/a=candidate:(.*)/g);
-      if (!localCandidates || localCandidates.length === 0) {
-        console.log("No ICE candidates gathered.");
-        // Handle the scenario where no ICE candidates were gathered
-      } else {
-        console.log("ICE candidates gathered:", localCandidates);
-        // ICE candidates were gathered successfully
-      }
-    }
-  };
+//     if (peerConnection.iceGatheringState === "complete") {
+//       // ICE gathering is complete, check if any candidates were gathered
+//       const localCandidates =
+//         peerConnection.localDescription?.sdp.match(/a=candidate:(.*)/g);
+//       if (!localCandidates || localCandidates.length === 0) {
+//         console.log("No ICE candidates gathered.");
+//         // Handle the scenario where no ICE candidates were gathered
+//       } else {
+//         console.log("ICE candidates gathered:", localCandidates);
+//         // ICE candidates were gathered successfully
+//       }
+//     }
+//   };
   // useEffect(() => {
   //   console.log("peer conection status from user detail", peerConnection.connectionState);
   // }, [peerConnection.connectionState]);
@@ -84,9 +85,8 @@ export const Meet = () => {
   const renderConnectedUsers = () => {
     return connectedUsers.map((user: User) => {
       return (
-
         <UserDetail
-          persontoHandshake={persontoHandshake && persontoHandshake.id}
+          persontoHandshake={persontoHandshake && persontoHandshake?.id}
           peerConnectionStatus={peerConnection.connectionState}
           id={user.id}
           name={user.name}
@@ -99,15 +99,21 @@ export const Meet = () => {
   //ice candidate exchnage
 
   peerConnection.onicecandidate = (event) => {
+    
     console.log("onicecandidate event is running");
-    if (event.candidate && persontoHandshake && socket!=null) {
-      let candidate = event.candidate;
-      socket.emit("candidate", { candidate, persontoHandshake, user });
-      console.log("can sent ");
+    if(peerConnection.remoteDescription){
+
+      console.log("actul ice candidates shared now ")
+         if (event.candidate && persontoHandshake && socket != null) {
+           let candidate = event.candidate;
+           socket.emit("candidate", { candidate, persontoHandshake, user });
+           console.log("can sent ");
+         }
     }
+ 
   };
 
-  const handleSocketConnection = (newUser: User):Promise<void> => {
+  const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
       try {
         const socket = io("http://localhost:8080", {
@@ -117,7 +123,7 @@ export const Meet = () => {
         setSocket(socket);
 
         socket.emit("welcomeUser", newUser);
-console.log("promise resolved ")
+        console.log("promise resolved ");
         resolve();
       } catch (err) {
         console.log("error in connect to socket", err);
@@ -130,21 +136,54 @@ console.log("promise resolved ")
   // console.log("peer connecvtion state change",peerConnection.connectionState)
   //   }
 
+  const handleAccept = async () => {
+    setShowCall(()=>false)
+    if (offer) {
+      peerConnection.setRemoteDescription(offer);
+
+      let answer = await createAnswer();
+
+      if (answer) {
+        console.log(
+          "created  and sent sdp answer after getting offer  , both local and remote : done "
+        );
+        let receivedUser = persontoHandshake;
+        socket?.emit("getCreateAnswerFromRequestedUser", {
+          answer,
+          receivedUser,
+        });
+      }
+    }
+  };
+
+  const handleReject = () => {
+
+    setPersontoHandshake(()=>null)
+    setOffer(()=>null)
+  };
+
   useEffect(() => {
     if (socket) {
-      console.log(socket);
       socket.on("connect", () => {
         console.log("socket connection established");
         socket.emit("newUserConnected", user);
         setShowWEBrtcConnection((prev) => !prev);
-        socket.on("activeUsers", (activeUsers:ConnectedUsers) => {
+        socket.on("activeUsers", (activeUsers: ConnectedUsers) => {
           setConnectedUsers(activeUsers);
         });
       });
-      socket.on("newUserConnected", (newUserData:User) => {
-        setConnectedUsers((prevUsers):ConnectedUsers => [...prevUsers, newUserData]);
+      socket.on("newUserConnected", (newUserData: User) => {
+        console.log(connectedUsers,newUserData)
+   setConnectedUsers((prevUsers) => {
+     if (prevUsers.length===0) {
+       return [newUserData];
+
+     } else {
+           return [...prevUsers, newUserData];
+     }
+   });
       });
-      socket.on("userDisconnected", (disconncetdUserdata:User) => {
+      socket.on("userDisconnected", (disconncetdUserdata: User) => {
         setConnectedUsers((prevUser) =>
           prevUser.filter((user) => user.id !== disconncetdUserdata.id)
         );
@@ -157,20 +196,10 @@ console.log("promise resolved ")
             "updatation of persontohandshake at socket event ",
             receivedUser
           );
+
+          setOffer(() => offer);
           setPersontoHandshake(() => receivedUser);
-          peerConnection.setRemoteDescription(offer);
-
-          let answer = await createAnswer();
-
-          if (answer) {
-            console.log(
-              "created  and sent sdp answer after getting offer  , both local and remote : done "
-            );
-            socket.emit("getCreateAnswerFromRequestedUser", {
-              answer,
-              receivedUser,
-            });
-          }
+          setShowCall(true);
 
           //send back localdescription.createanswer to client via socket event
         }
@@ -197,15 +226,15 @@ console.log("promise resolved ")
         console.log("guest:", persontoHandshake, "user :", user);
         // if (persontoHandshake && persontoHandshake.id == guest.id) {
         console.log("id matched for ice candidate exchnage");
+        if(peerConnection.remoteDescription){
+
         peerConnection.addIceCandidate(candidate);
+        }
+
         // }
       });
     }
   }, [socket]);
-
-  useEffect(() => {
-    console.log("guest chnaged ", persontoHandshake);
-  }, [persontoHandshake]);
 
   return (
     <div>
@@ -224,18 +253,28 @@ console.log("promise resolved ")
           socket={socket}
         />
       )}
+
+      {showCall && persontoHandshake && (
+        <Call
+          handleAccept={handleAccept}
+          handleReject={handleReject}
+          persontoHandShake={persontoHandshake}
+        />
+      )}
       {socket && (
         <>
           <h2>connected people</h2>
-          {connectedUsers.length > 0 ? (
-            renderConnectedUsers()
-          ) : (
-            <h3>there is no one joined this room</h3>
-          )}
+          <div className="connected_people_wrapper">
+            {connectedUsers.length > 0 ? (
+              renderConnectedUsers()
+            ) : (
+              <h3>there is no one joined this room</h3>
+            )}
+          </div>
         </>
       )}
 
-      {showWEBrtcConnection  &&  (
+      {showWEBrtcConnection && (
         <WebrtcConnection
           persontoHandshake={persontoHandshake}
           peerConnection={peerConnection}

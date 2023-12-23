@@ -6,6 +6,7 @@
 
 body{
   background-color: rgb(12, 12, 76);
+  /* background-image: linear-gradient(rgb(14, 14, 52),rgb(35, 33, 127)); */
   margin: 0px;
   padding: 10px;
 }

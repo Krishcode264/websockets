@@ -1,8 +1,10 @@
 
 import {v4 as uuidv4} from 'uuid'
 import { useEffect, useState } from "react";
-import { User } from "../types/types";
+import { User } from "ui/types/types";
 import { Socket } from "socket.io-client";
+import LoginIcon from "@mui/icons-material/Login";
+import { IconBtn } from 'ui';
 type HandleSocketConnection = (newUser: User) => Promise<any>;
 
 type UserFormprops = {
@@ -65,7 +67,10 @@ return(()=>{
         value={user.name}
         placeholder="enter your name"
       />
-      <button onClick={handleSaveUserForm}>save</button>
+      <button onClick={handleSaveUserForm}>
+        <p>save</p>
+        <IconBtn icon={LoginIcon} br="50%" color="green" />
+      </button>
     </div>
   );
 };

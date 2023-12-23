@@ -1,7 +1,7 @@
 export type User = {
   name: string;
   id: string;
-  socketID?:string|null;
+ 
 };
 
 export type Offer = {

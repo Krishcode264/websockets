@@ -1,4 +1,5 @@
-import { User } from "../types/types";
+import { useEffect } from "react";
+import { User } from "ui/types/types";
 
 type UserDetailProps = {
   peerConnectionStatus: string; // Replace with the specific type for peerConnectionStatus
@@ -16,17 +17,20 @@ export const UserDetail:React.FC<UserDetailProps> = ({
   emitUserRequestForVideoCall,
 }) => {
 console.log("user detail compont render ")
+
+useEffect(()=>{
+
+},[peerConnectionStatus])
+
   return (
     <section key={id} className="user_detail">
-      <h4>{name}</h4>
-      <h2>{id}</h2>
-      {/* {persontoHandshake && persontoHandshake.id == id && (
-        <button onClick={() => emitUserRequestForVideoCall({ name, id })}>
-          start video call
-        </button>
-      )} */}
-      <button onClick={() => emitUserRequestForVideoCall({ name, id })}>
-        {peerConnectionStatus === "connected" && persontoHandshake==id
+      <h1>{name}</h1>
+
+      <button
+        disabled={persontoHandshake===id}
+        onClick={() => emitUserRequestForVideoCall({ name, id })}
+      >
+        { persontoHandshake === id
           ? "in a call"
           : "start a video call"}
       </button>
