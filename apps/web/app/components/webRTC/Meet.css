@@ -5,31 +5,38 @@
     transform: translate(-50%,-50%);
     padding: 23px;
     width: 300px;
-    border: 2px solid white;
-    background-color: rgba(218, 18, 15, 0.516);
+   /* border: 0.8px solid whitesmoke; */
+   box-shadow: 5px 0px -10px rgba(14, 14, 14, 0.818);
+    background-color: rgba(53, 30, 61, 0.73);
     border-radius: 13px;
 }
-input{
+.user_form>input{
     padding: 12px;
         border-radius: 5px;
         margin: auto;
         display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: space-between;
         font-size: 21px;
 }
 .user_form > button{
-    display: block;
+    display: flex;
     margin: auto;
     padding: 4px 12px;
     margin-top: 12px;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 21px;
+
 }
 .user_detail{
     display: flex;
+    margin-top: 24px;
     width: 100%;
-    justify-content: center;
+    justify-content:space-between;
     align-items: center;
-    gap: 18px;
+   
 }
 
 .user_detail>button{
@@ -56,8 +63,8 @@ h1,h2,h3{
 
   padding: 12px;
   border-radius: 8px;
- 
-  border: 2px solid white;
+ padding: 12px;
+  background-color: black;
 
 }
 .video_wrappers{
@@ -79,5 +86,15 @@ border-radius: 12px;
 }
 .user_form>input{
     width: 90%;
-    border: 2px solid red;
+   
+}
+.connected_people_wrapper{
+    width: 60%;
+    margin: auto;
+    border-radius: 12px;
+    padding: 12px 24px;
+    color: white;
+    background-color: rgba(44, 98, 168, 0.558);
+    margin: 20px 100px;
+    justify-content: space-between;
 }

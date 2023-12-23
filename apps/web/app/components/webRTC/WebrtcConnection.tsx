@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRef } from "react";
 import "./Meet.css";
-import { User } from "../types/types";
+import { User } from "ui/types/types";
+import { Button } from "ui";
 
-import { RefObject } from "react";
+import { Label } from "ui";
 
 type WebrtcConnectionProps = {
   persontoHandshake: User | null;
@@ -84,16 +85,13 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
       // console.log(e.streams[0]);
       const remoteStream = e.streams[0];
       console.log(remoteStream);
+      console.log("we got remote stream")
       if (theirVideo.current && remoteStream) {
+              console.log("we got remote stream adding to srcobject elelemt ");
         theirVideo.current.srcObject = remoteStream;
+            
       }
-    };
-
-    return () => {
-      peerConnection.ontrack = null;
-    };
-  }, [peerConnectionStatus, peerConnection]);
-
+      
   if (theirVideo.current) {
     theirVideo.current.addEventListener("loadedmetadata", () => {
       theirVideo.current
@@ -106,17 +104,23 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
         );
     });
   }
+    };
+
+    return () => {
+      peerConnection.ontrack = null;
+    };
+  }, [peerConnectionStatus]);
+
   return (
-    <div className="webrtc_template">
-      WebrtcConnection
+    <div className="webrtc_template max_mode">
       <div className="video_wrappers">
         <section className="name_video">
-          <h1>you</h1>
+      
           <video className="video" id="v1" ref={myvideo} src=""></video>
         </section>
 
         <section>
-          {(persontoHandshake && <h1> {persontoHandshake.name}</h1>) || "Guest"}
+
           <video
             className="video"
             id="v2"
@@ -127,6 +131,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
           ></video>
         </section>
       </div>
+      <Button text="view in Max mode "/>
     </div>
   );
 };

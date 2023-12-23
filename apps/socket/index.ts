@@ -1,50 +1,60 @@
 import { Candidate, Offer, User } from "ui/types/types";
 import { Socket } from "socket.io";
 import http from "http";
-import  socketIO from "socket.io";
-import cors from "cors";
+
 import { Server } from "socket.io";
 const httpServer = http.createServer();
+import { connectMongo } from "./mongoose/connectMongo";
+import dotenv from "dotenv";
+import {
+  deleteUserData,
+  findUserById,
+  saveUserData,
+} from "./mongoose/model/userModel";
+import { UserSchemaType } from "./types";
+import { getAllUsers } from "./mongoose/model/userModel";
+dotenv.config();
+
 //to allow cross origin policy so that it can accept request from any url
 
 const io = new Server(httpServer, { path: "/socket" });
 
-let activeUsers = new Map();
 
-const getTargetUser = (requestedUser: User) => {
-  console.log(requestedUser);
-  console.log(activeUsers);
-  for (const [key, value] of activeUsers.entries()) {
-    console.log(value.id, requestedUser.id);
-    if (value.id === requestedUser.id) {
-      console.log("found target user");
-      return key;
-    }
-  }
-  console.log("target user not found ");
-  return null;
-};
 
 function socketioConnection() {
-  io.on("connection", (socket: Socket) => {
+  io.on("connection", async (socket: Socket) => {
     console.log("user connected", socket.id);
+    getAllUsers().then((data) => socket.emit("activeUsers", data));
 
     //sending list of active users to newly connected client
-    socket.emit("activeUsers", Array.from(activeUsers.values()));
+
     //sending data of newly connceted user to all active clients
-    socket.on("newUserConnected", (newUserData: User) => {
+    socket.on("newUserConnected", (newUserData: UserSchemaType) => {
       console.log(newUserData);
-      activeUsers.set(socket.id, newUserData);
-      socket.broadcast.emit("newUserConnected", newUserData);
+      //sending user to mongo db
+      saveUserData({
+        ...newUserData,
+        socketID: socket.id,
+        isConnected: true,
+      }).then((data) => {
+        if (data) {
+          const { name, id } = data;
+          socket.broadcast.emit("newUserConnected", { name, id });
+        }
+      });
     });
 
     //user disconnetion
 
     socket.on("disconnect", () => {
-      const disconnectedUserData = activeUsers.get(socket.id);
-      activeUsers.delete(socket.id);
-      console.log("user dissconnected ");
-      socket.broadcast.emit("userDisconnected", disconnectedUserData);
+      deleteUserData(socket.id).then((data) => {
+        if (data) {
+          const { name, id } = data;
+
+          console.log("user dissconnected ");
+          socket.broadcast.emit("userDisconnected", { name, id });
+        }
+      });
     });
     //making RTCP handshake
     socket.on(
@@ -52,11 +62,13 @@ function socketioConnection() {
       async ({ offer, requestedUser, user }: Offer) => {
         console.log("got ", requestedUser, user);
         if (requestedUser) {
-          const targetUserSocketId = await getTargetUser(requestedUser);
-          console.log("received request offer", targetUserSocketId);
-          io.to(targetUserSocketId).emit("receivedOfferForRTC", {
-            user,
-            offer,
+          findUserById(requestedUser.id).then((socketID) => {
+            if (socketID) {
+              io.to(socketID).emit("receivedOfferForRTC", {
+                user,
+                offer,
+              });
+            }
           });
         }
       }
@@ -70,11 +82,15 @@ function socketioConnection() {
       async ({ answer, receivedUser }: Offer) => {
         console.log("getting create answer from req user", receivedUser);
         if (receivedUser) {
-          const targetUserSocketId = await getTargetUser(receivedUser);
-          console.log("received answer", targetUserSocketId);
-          io.to(targetUserSocketId).emit("receivedAnswerToRTC", {
-            answer,
-            receivedUser,
+          findUserById(receivedUser.id).then((socketID) => {
+            if (socketID) {
+              io.to(socketID).emit("receivedAnswerToRTC", {
+                answer,
+                receivedUser,
+              });
+
+              console.log("received answer", socketID);
+            }
           });
         }
       }
@@ -89,19 +105,23 @@ function socketioConnection() {
           "person who sent it",
           user
         );
-        const targetUserSocketId = await getTargetUser(persontoHandshake);
-        console.log(
-          "received  target user to send candidate",
-          targetUserSocketId
-        );
-        io.to(targetUserSocketId).emit("candidate", { candidate, user });
+        findUserById(persontoHandshake.id).then((socketID) => {
+          if (socketID) {
+            io.to(socketID).emit("candidate", { candidate, user });
+            console.log("received  target user to send candidate");
+          }
+        });
       }
     );
   });
 }
+const uri = process.env.MONGO_URI;
 
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
-  // connectMongo()
+  console.log(uri);
+  if (uri) {
+    connectMongo(uri);
+  }
 });
