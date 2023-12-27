@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserSchemaType } from "../../types";
+import { UserSchemaType } from "core";
 import { userSchema } from "../schemas/userSchema";
 
 export const UserData = mongoose.model("SocketUsers", userSchema);

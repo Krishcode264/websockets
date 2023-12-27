@@ -32,3 +32,14 @@ button{
   border-radius: 5px;
   cursor: pointer;
 }
+
+
+h1{
+
+font-family: 'Nunito', sans-serif;
+font-weight: 700;
+}
+p{
+  font-family: "Nunito",sans-serif;
+  font-weight: 500;
+}

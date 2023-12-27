@@ -59,7 +59,7 @@ return(()=>{
         type="text"
         autoFocus={true}
         onChange={(e) =>
-          setUser((prevUser) => ({
+          setUser((prevUser:User) => ({
             ...prevUser,
             name: e.target.value,
           }))

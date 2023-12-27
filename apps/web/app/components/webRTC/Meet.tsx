@@ -6,9 +6,9 @@ import io from "socket.io-client";
 import WebrtcConnection from "./WebrtcConnection";
 import { UserDetail } from "./UserDetail";
 import { UserForm } from "./UserForm";
-import { User } from "ui/types/types";
-import { Offer } from "ui/types/types";
-import { Candidate } from "ui/types/types";
+import { User } from "core";
+import { Offer } from "core";
+import { Candidate } from "core";
 import { Socket } from "socket.io-client";
 import Call from "./Call";
 
@@ -28,8 +28,7 @@ export const Meet = () => {
     echoCancellation: true,
     iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
   };
-  const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>(
-    new RTCPeerConnection(configForPeerconnection)
+  const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>(new RTCPeerConnection(configForPeerconnection)
   );
 
 //  peerConnection.onicegatheringstatechange = () => {
@@ -57,7 +56,6 @@ export const Meet = () => {
   const createOffer = async () => {
     let offer = await peerConnection.createOffer();
     peerConnection.setLocalDescription(offer);
-
     return offer;
   };
 
@@ -265,7 +263,7 @@ export const Meet = () => {
         <>
           <h2>connected people</h2>
           <div className="connected_people_wrapper">
-            {connectedUsers.length > 0 ? (
+            {connectedUsers?.length > 0 ? (
               renderConnectedUsers()
             ) : (
               <h3>there is no one joined this room</h3>

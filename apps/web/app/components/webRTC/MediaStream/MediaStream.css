@@ -1,0 +1,60 @@
+.media_stream_wrapper {
+
+  min-height: 200px;
+  /* border: 1px solid green; */
+  flex: 1;
+  position: relative;
+  flex-direction: column;
+  background-color: black;
+}
+/* .media_container{
+    position: relative;
+    
+    border-radius: 4px;
+    background-color: black;
+  
+   
+    border: 2px solid red;
+    margin: auto;
+} */
+.audio_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid red; */
+}
+.audio_container > audio {
+  display: none;
+}
+.toggle_btns_wrapper {
+  /* border: 1px solid; */
+  position: absolute;
+  bottom: 0;
+
+  left: 50%;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+}
+.toggle_btns {
+  padding: 4px;
+  margin: 0;
+}
+.toggle_btns:hover {
+  border: none;
+  outline: none;
+}
+.video_container {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  /* border: 1px solid red; */
+}
+
+
+

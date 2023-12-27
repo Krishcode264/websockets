@@ -1,137 +1,109 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useRef } from "react";
 import "./Meet.css";
-import { User } from "ui/types/types";
+import './MediaStream/MediaStream.css'
+import { User } from "core/types/types";
+import MediaStream from "./MediaStream/MediaStream";
+import MediaStreamGuest from "./MediaStream/MediaStreamGuest";
 import { Button } from "ui";
-
-import { Label } from "ui";
-
+import { dividerClasses } from "@mui/material";
 type WebrtcConnectionProps = {
   persontoHandshake: User | null;
   peerConnection: RTCPeerConnection;
   peerConnectionStatus: string;
 };
-type VideoTypeRef = React.RefObject<HTMLVideoElement>;
 
 const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
   persontoHandshake,
   peerConnection,
   peerConnectionStatus,
 }) => {
-  const myvideo: VideoTypeRef = useRef(null);
-  const theirVideo: VideoTypeRef = useRef(null);
-  console.log("web socket is running ");
-  const addStreamToVideoElement = (
-    ref: VideoTypeRef,
-    stream: MediaStream | null
-  ) => {
-    if (ref.current && stream) {
-      try {
-        // ref.current.pause();
+  const [remoteStream, setRemoteStream] = useState<null | MediaStream>(null);
+  const [video, setVideo] = useState(false);
+  const [audio, setAudio] = useState(false);
+  const [mediaStreamAll, setMediaStreamAll] = useState<MediaStream | null>(
+    null
+  );
+  const [tracksAdded, setTracksAdded] = useState(false);
 
-        // For the first stream, set the srcObject and play it
-        ref.current.srcObject = stream;
-        ref.current.addEventListener("loadedmetadata", () => {
-          ref.current
-            ?.play()
-            .catch((err: any) =>
-              console.log("error while playing video on loaded metatdata", err)
-            );
-        });
-      } catch (err) {
-        console.log("Error in adding stream to video element: ", err);
+  const toggleTracks = (type: string) => {
+    peerConnection.getSenders().forEach((sender: RTCRtpSender) => {
+      if (sender.track?.kind === type) {
+        sender.track.enabled = !sender.track.enabled;
+        type === "audio"
+          ? setAudio((prev) => !prev)
+          : setVideo((prev) => !prev);
       }
-    }
+      console.log(peerConnection.getSenders(), "senderes");
+    });
   };
-  const getUserMedia = async () => {
-    // console.log("get user media is running");
 
+  const setDefaultdisabledTracks = (stream: MediaStream) => {
+    stream.getTracks().forEach((track) => {
+      track.enabled = false;
+
+      peerConnection.addTrack(track, stream);
+      setAudio(() => false);
+      setVideo(() => false);
+    });
+    console.log(peerConnection.getSenders());
+    setMediaStreamAll(() => stream);
+  };
+
+  const getUserMediaStream = () => {
+    if (tracksAdded) {
+      return; // Already added tracks
+    }
+
+    console.log("getuser media runnig ");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then((mediastream) => {
-        addStreamToVideoElement(myvideo, mediastream);
-        mediastream.getTracks().forEach((track) => {
-          // console.log("adding track to peer connection");
-          peerConnection.addTrack(track, mediastream);
-        });
+      .then((stream) => {
+        setDefaultdisabledTracks(stream);
+        setTracksAdded(() => true);
       })
-      .catch((err) => console.log("err adding strem to video element ", err));
+      .catch((err) => console.log(err));
   };
 
-  // peerConnection.onconnectionstatechange = () => {
-  //   console.log(
-  //     "peer connecvtion state change",
-  //     peerConnection.connectionState
-  //   );
-  //   if (peerConnection.connectionState == "connected" && peerConnection) {
-  //     console.log(peerConnectionStatus, "connected blovk running ");
-
-  //     peerConnection.ontrack = (e) => {
-  //       getStream()
-  //       console.log("egtiig n remote stream", e.streams);
-  //       console.log(e.streams[0]);
-  //       const remoteStream = e.streams[0];
-  //       addStreamToVideoElement(theirVideo, remoteStream);
-  //     };
-  //   }
-  // };
-
   useEffect(() => {
-    getUserMedia();
     console.log("peer status chn aged and webrtc componet render happen");
     peerConnection.ontrack = (e: RTCTrackEvent) => {
-      // console.log("egtiig n remote stream", e.streams);
-      // console.log(e.streams[0]);
-      const remoteStream = e.streams[0];
-      console.log(remoteStream);
-      console.log("we got remote stream")
-      if (theirVideo.current && remoteStream) {
-              console.log("we got remote stream adding to srcobject elelemt ");
-        theirVideo.current.srcObject = remoteStream;
-            
+      const rm = e.streams[0];
+      if (rm) {
+        setRemoteStream(() => rm);
+        console.log(rm.getTracks(), "tracks from webrtc newly got");
       }
-      
-  if (theirVideo.current) {
-    theirVideo.current.addEventListener("loadedmetadata", () => {
-      theirVideo.current
-        ?.play()
-        .catch((err) =>
-          console.log(
-            "error while playing video on loaded  from remote side",
-            err
-          )
-        );
-    });
-  }
     };
 
     return () => {
       peerConnection.ontrack = null;
     };
-  }, [peerConnectionStatus]);
+  }, [peerConnectionStatus, peerConnection]);
 
   return (
     <div className="webrtc_template max_mode">
-      <div className="video_wrappers">
-        <section className="name_video">
+      {tracksAdded ? (
+        <div className="video_wrappers">
+          <MediaStream
+            mediaStreamAll={mediaStreamAll}
+            video={video}
+            audio={audio}
+            toggleTracks={toggleTracks}
+            persontoHandshake={persontoHandshake}
+            peerConnection={peerConnection}
+            peerConnectionStatus={peerConnection.connectionState}
+          />
+
+          <MediaStreamGuest remoteStream={remoteStream} />
+        </div>
+      ) : (
+        <div className="getUser_media_btn">
       
-          <video className="video" id="v1" ref={myvideo} src=""></video>
-        </section>
-
-        <section>
-
-          <video
-            className="video"
-            id="v2"
-            ref={theirVideo}
-            muted={true}
-            autoPlay={true}
-            src=""
-          ></video>
-        </section>
-      </div>
-      <Button text="view in Max mode "/>
+          <button onClick={getUserMediaStream}>
+           click to give Permissions for audio video
+          </button>
+        </div>
+      )}
     </div>
   );
 };
