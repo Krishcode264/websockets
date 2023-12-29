@@ -16,7 +16,12 @@ const Call: React.FC<CallProps> = ({
   handleAccept,
 }) => {
 
-
+const handleAcceptClick = () => {
+  handleAccept().catch((error) => {
+    // Handle any errors from handleAccept
+    console.error("Error in handleAccept:", error);
+  });
+};
 
   return (
     <div className="call_wrapper">
@@ -28,7 +33,7 @@ const Call: React.FC<CallProps> = ({
       </div>
 
       <div className="accept_decline">
-        <button className="accept" onClick={handleAccept}>
+        <button className="accept" onClick={handleAcceptClick}>
           <IconBtn icon={CallIcon} br="50%" />
         </button>
 
