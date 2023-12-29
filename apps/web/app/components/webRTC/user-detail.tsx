@@ -2,7 +2,7 @@
 import { User } from "core";
 
 interface UserDetailProps {
-  peerConnectionStatus: string; // Replace with the specific type for peerConnectionStatus
+  peerConnectionStatus: string|undefined; // Replace with the specific type for peerConnectionStatus
   persontoHandshake: string|null|undefined; // Replace with the specific type for persontoHandshake
   name: string;
   id: string;

@@ -30,8 +30,12 @@ export const Meet = () => {
     echoCancellation: true,
     iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
   };
-  const [peerConnection] = useState<RTCPeerConnection>(
-    new RTCPeerConnection(configForPeerconnection)
+  const [peerConnection] = useState<RTCPeerConnection|null>(()=>{
+      if (typeof window !== 'undefined') {
+            return new RTCPeerConnection(configForPeerconnection);
+       }
+       return null
+    }
   );
 
   //  peerConnection.onicegatheringstatechange = () => {
@@ -58,8 +62,8 @@ export const Meet = () => {
 
   const createOffer = async () => {
     try {
-      const createdOffer = await peerConnection.createOffer();
-      peerConnection.setLocalDescription(createdOffer);
+      const createdOffer = await peerConnection?.createOffer();
+      await peerConnection?.setLocalDescription(createdOffer);
       return createdOffer;
     } catch (error) {
       // Handle the error if needed
@@ -70,8 +74,8 @@ export const Meet = () => {
 
   const createAnswer = async () => {
     try {
-      const createdanswer = await peerConnection.createAnswer();
-      peerConnection.setLocalDescription(createdanswer);
+      const createdanswer = await peerConnection?.createAnswer();
+     await  peerConnection?.setLocalDescription(createdanswer);
       console.log("offer created on peerconnection");
       return createdanswer;
     } catch (error) {
@@ -101,7 +105,7 @@ export const Meet = () => {
       return (
         <UserDetail
           persontoHandshake={persontoHandshake?.id}
-          peerConnectionStatus={peerConnection.connectionState}
+          peerConnectionStatus={peerConnection?.connectionState}
           id={connecteduser.id}
           key={connecteduser.id}
           name={connecteduser.name}
@@ -112,18 +116,20 @@ export const Meet = () => {
   };
 
   //ice candidate exchnage
-
-  peerConnection.onicecandidate = (event) => {
-    // console.log("onicecandidate event is running");
-    if (peerConnection.remoteDescription) {
-      // console.log("actul ice candidates shared now ");
-      if (event.candidate && persontoHandshake && socket !== null) {
-        const candidate = event.candidate;
-        socket.emit("candidate", { candidate, persontoHandshake, user });
-        console.log("candidate  sent ");
-      }
-    }
-  };
+if(peerConnection){
+ peerConnection.onicecandidate = (event) => {
+   // console.log("onicecandidate event is running");
+   if (peerConnection.remoteDescription) {
+     // console.log("actul ice candidates shared now ");
+     if (event.candidate && persontoHandshake && socket !== null) {
+       const candidate = event.candidate;
+       socket.emit("candidate", { candidate, persontoHandshake, user });
+       console.log("candidate  sent ");
+     }
+   }
+ };
+}
+ 
 
   const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
@@ -154,7 +160,7 @@ export const Meet = () => {
     if (offer) {
       await new Promise<void>((resolve, reject) => {
         peerConnection
-          .setRemoteDescription(offer)
+          ?.setRemoteDescription(offer)
           .then(async () => {
             const answer = await createAnswer();
             socket?.emit("getCreateAnswerFromRequestedUser", {
@@ -233,14 +239,14 @@ export const Meet = () => {
         }
       );
       socket.on("receivedAnswerToRTC", async ({ answer }: Offer) => {
-        await peerConnection.setRemoteDescription(answer);
+        await peerConnection?.setRemoteDescription(answer);
       });
       socket.on("candidate", async ({ candidate }: Candidate) => {
         console.log("candidate event running we got ice can ", candidate);
         // console.log("guest:", persontoHandshake, "user :", user);
         // if (persontoHandshake && persontoHandshake.id == guest.id) {
         console.log("id matched for ice candidate exchnage");
-        if (peerConnection.remoteDescription) {
+        if (peerConnection?.remoteDescription) {
           try {
             await peerConnection.addIceCandidate(candidate);
           } catch (error) {
@@ -300,8 +306,8 @@ export const Meet = () => {
       {showWEBrtcConnection && (
         <WebrtcConnection
           persontoHandshake={persontoHandshake}
-          peerConnection={peerConnection}
-          peerConnectionStatus={peerConnection.connectionState}
+          peerConnection={peerConnection && peerConnection}
+          peerConnectionStatus={peerConnection?.connectionState}
         />
       )}
     </div>

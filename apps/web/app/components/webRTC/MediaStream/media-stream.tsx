@@ -44,7 +44,7 @@ interface MediaStreamProps {
   toggleTracks:(n:string)=>void;
   audio: boolean;
   // Replace with the appropriate type
-  peerConnection?: RTCPeerConnection; // Replace with the appropriate type
+  peerConnection?: RTCPeerConnection|null; // Replace with the appropriate type
   peerConnectionStatus?: string; // Replace with the appropriate type
 }
 const MediaStream: React.FC<MediaStreamProps> = ({

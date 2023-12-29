@@ -8,8 +8,8 @@ import MediaStreamGuest from "./MediaStream/media-stream-guest";
 
 interface WebrtcConnectionProps {
   persontoHandshake: User | null;
-  peerConnection: RTCPeerConnection;
-  peerConnectionStatus: string;
+  peerConnection: RTCPeerConnection|null;
+  peerConnectionStatus: string|undefined;
 };
 
 const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
@@ -26,7 +26,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
   const [tracksAdded, setTracksAdded] = useState(false);
 
   const toggleTracks = (type: string) => {
-    peerConnection.getSenders().forEach((sender: RTCRtpSender) => {
+    peerConnection?.getSenders().forEach((sender: RTCRtpSender) => {
       if (sender.track?.kind === type) {
         sender.track.enabled = !sender.track.enabled;
         type === "audio"
@@ -41,7 +41,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
     stream.getTracks().forEach((track) => {
       track.enabled = false;
 
-      peerConnection.addTrack(track, stream);
+      peerConnection?.addTrack(track, stream);
       setAudio(() => false);
       setVideo(() => false);
     });
@@ -69,6 +69,8 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
 
   useEffect(() => {
     // console.log("peer status chn aged and webrtc componet render happen");
+
+    if(peerConnection){
     peerConnection.ontrack = (e: RTCTrackEvent) => {
       const rm = e.streams[0];
       if (rm) {
@@ -77,9 +79,11 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
       }
     };
 
-    return () => {
-      peerConnection.ontrack = null;
-    };
+    // return () => {
+    //   peerConnection.ontrack = null;
+    // };
+    }
+
   }, [peerConnectionStatus, peerConnection]);
 
   return (
@@ -93,7 +97,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
             toggleTracks={toggleTracks}
             persontoHandshake={persontoHandshake}
             peerConnection={peerConnection}
-            peerConnectionStatus={peerConnection.connectionState}
+            peerConnectionStatus={peerConnection?.connectionState}
           />
 
           <MediaStreamGuest remoteStream={remoteStream} />
