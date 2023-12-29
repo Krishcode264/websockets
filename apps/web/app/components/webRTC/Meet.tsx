@@ -9,7 +9,7 @@ import io from "socket.io-client";
 import WebrtcConnection from "./webrtc-connection";
 import { UserForm } from "./user-form";
 import { UserDetail } from "./user-detail";
-import Call from "./Call";
+import Call from "./call";
 import { Socket } from "socket.io-client";
 
 export interface OfferSdp {
