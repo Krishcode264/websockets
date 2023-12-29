@@ -7,8 +7,8 @@ import "./Meet.css";
 import { useState } from "react";
 import io from "socket.io-client";
 import WebrtcConnection from "./webrtc-connection";
-import { UserForm } from "./userform";
-import { UserDetail } from "./userdetail";
+import { UserForm } from "./user-form";
+import { UserDetail } from "./user-detail";
 import Call from "./call";
 import { Socket } from "socket.io-client";
 
