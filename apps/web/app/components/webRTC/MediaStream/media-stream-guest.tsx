@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "./mediaStream.css";
-import { VideoComponent, AudioComponent } from "./MediaStreamComponent";
+import { VideoComponent, AudioComponent } from "./media-stream-component";
 const MediaStreamGuest = ({
   remoteStream,
 }: {
@@ -25,7 +25,7 @@ const MediaStreamGuest = ({
     <div className="media_stream_wrapper">
       <div className="video_audio">
         {remoteStream && video && <VideoComponent media={remoteStream} />}
-        {remoteStream && audio && video === false && (
+        {remoteStream && audio && !video && (
           <AudioComponent media={remoteStream} />
         )}
       </div>

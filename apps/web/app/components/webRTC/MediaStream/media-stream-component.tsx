@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
 import { useRef } from "react";
@@ -17,13 +18,20 @@ export const VideoComponent: React.FC<MediaProps> = ({
       videoref.current.addEventListener("loadedmetadata", () => {
         videoref.current
           ?.play()
-          .catch((err) =>
-            console.log("error while playing video on loaded metatdata", err)
+          .catch((err) => {
+            throw err
+  console.log("error while playing video on loaded metatdata", err);
+          }
+          
           );
       });
     }
   }, []);
-  return <video ref={videoref} className="video_container"></video>;
+  return (
+    <video ref={videoref} className="video_container">
+      <track kind="captions"></track>
+    </video>
+  );
 };
 
 export const AudioComponent: React.FC<MediaProps> = ({ media }) => {
@@ -35,7 +43,11 @@ const audioref = useRef<HTMLAudioElement>(null);
         audioref.current
           ?.play()
           .catch((err) =>
-            console.log("error while playing video on loaded metatdata", err)
+          {
+            throw err
+             console.log("error while playing video on loaded metatdata", err);
+          }
+           
           );
       });
     }
@@ -43,7 +55,9 @@ const audioref = useRef<HTMLAudioElement>(null);
   return (
     <div className="audio_container">
       <RecordVoiceOverIcon sx={{ fontSize: 85, color: "white" }} />
-      <audio ref={audioref}></audio>
+      <audio ref={audioref}>
+        <track kind="captions"></track>
+      </audio>
     </div>
   );
 };

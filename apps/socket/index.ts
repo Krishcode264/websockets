@@ -59,8 +59,8 @@ function socketioConnection() {
     //making RTCP handshake
     socket.on(
       "receivedOfferForRTC",
-      async ({ offer, requestedUser, user }: Offer) => {
-        console.log("got ", requestedUser, user);
+      async ({ offercreated:offer, requestedUser, user }: Offer) => {
+        console.log("got   step 1 : got offer ", requestedUser, user);
         if (requestedUser) {
           findUserById(requestedUser.id).then((socketID) => {
             if (socketID) {
@@ -120,7 +120,7 @@ const uri = process.env.MONGO_URI;
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
-  console.log(uri);
+
   if (uri) {
     connectMongo(uri);
   }

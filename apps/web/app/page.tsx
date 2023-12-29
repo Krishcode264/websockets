@@ -1,11 +1,10 @@
 
-
+import { IconBtn } from "ui";
 import React from 'react'
 import './Front.css'
 import Link from "next/link";
-import Call from './components/webRTC/Call';
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
-import { IconBtn } from 'ui';
+
 
 const page = () => {
 

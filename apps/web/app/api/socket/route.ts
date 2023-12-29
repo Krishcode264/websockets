@@ -1,6 +1,6 @@
-import { NextRequest } from "next/server";
+// import { NextApiRequest } from "next";
 
-export function GET(req: NextRequest) {
-  console.log("get running ");
+// export function GET(req: NextApiRequest) {
+//   console.log("get running ");
 
-}
+// }

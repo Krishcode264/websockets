@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
-
+import React from "react";
+import { User } from "core";
 
 import "./mediaStream.css";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import MicIcon from "@mui/icons-material/Mic";
-import { IconButton } from "@mui/material";
-import { AudioComponent,VideoComponent } from "./MediaStreamComponent";
-import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
-import { User } from "core";
+import { AudioComponent,VideoComponent } from "./media-stream-component";
+
 
 interface ToggleButtonsProps {
   state: boolean;
-  Icon: any;
-  OppoIcon: any;
+  Icon: React.FC;
+  OppoIcon: React.FC;
   toggleTracks: (type: string) => void;
   type: string;
 }
@@ -33,8 +31,8 @@ const ToggleButtons: React.FC<ToggleButtonsProps> = ({
           toggleTracks(type);
         }}
       >
-        {state && <Icon sx={{ fontSize: 35, color: "blue" }} />}
-        {state === false && <OppoIcon sx={{ fontSize: 35, color: "red" }} />}
+        {state && <Icon  />}
+        {!state && <OppoIcon />}
       </button>
     </>
   );
@@ -46,16 +44,16 @@ interface MediaStreamProps {
   toggleTracks:(n:string)=>void;
   audio: boolean;
   // Replace with the appropriate type
-  peerConnection: any; // Replace with the appropriate type
-  peerConnectionStatus: any; // Replace with the appropriate type
+  peerConnection?: RTCPeerConnection; // Replace with the appropriate type
+  peerConnectionStatus?: string; // Replace with the appropriate type
 }
 const MediaStream: React.FC<MediaStreamProps> = ({
-  persontoHandshake,
-  peerConnection,
+  // persontoHandshake,
+  // peerConnection,
   mediaStreamAll,
   video,audio,
   toggleTracks,
-  peerConnectionStatus,
+  // peerConnectionStatus,
 }) => {
     
     
@@ -71,7 +69,7 @@ const MediaStream: React.FC<MediaStreamProps> = ({
        
         <div className="video_audio">
           {mediaStreamAll && video && <VideoComponent media={mediaStreamAll} />}
-          {mediaStreamAll && audio && video === false && (
+          {mediaStreamAll && audio && !video && (
             <AudioComponent media={mediaStreamAll} />
           )}
         </div>

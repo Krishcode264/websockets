@@ -3,11 +3,10 @@ import { useState } from "react";
 import "./Meet.css";
 import './MediaStream/MediaStream.css'
 import { User } from "core/types/types";
-import MediaStream from "./MediaStream/MediaStream";
-import MediaStreamGuest from "./MediaStream/MediaStreamGuest";
-import { Button } from "ui";
-import { dividerClasses } from "@mui/material";
-type WebrtcConnectionProps = {
+import MediaStream from "./MediaStream/media-stream";
+import MediaStreamGuest from "./MediaStream/media-stream-guest";
+
+interface WebrtcConnectionProps {
   persontoHandshake: User | null;
   peerConnection: RTCPeerConnection;
   peerConnectionStatus: string;
@@ -34,7 +33,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
           ? setAudio((prev) => !prev)
           : setVideo((prev) => !prev);
       }
-      console.log(peerConnection.getSenders(), "senderes");
+      // console.log(peerConnection.getSenders(), "senderes");
     });
   };
 
@@ -46,7 +45,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
       setAudio(() => false);
       setVideo(() => false);
     });
-    console.log(peerConnection.getSenders());
+    // console.log(peerConnection.getSenders());
     setMediaStreamAll(() => stream);
   };
 
@@ -55,23 +54,26 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
       return; // Already added tracks
     }
 
-    console.log("getuser media runnig ");
+    // console.log("getuser media runnig ");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setDefaultdisabledTracks(stream);
         setTracksAdded(() => true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{
+        // console.log(err)
+        throw(err);
+      } );
   };
 
   useEffect(() => {
-    console.log("peer status chn aged and webrtc componet render happen");
+    // console.log("peer status chn aged and webrtc componet render happen");
     peerConnection.ontrack = (e: RTCTrackEvent) => {
       const rm = e.streams[0];
       if (rm) {
         setRemoteStream(() => rm);
-        console.log(rm.getTracks(), "tracks from webrtc newly got");
+        // console.log(rm.getTracks(), "tracks from webrtc newly got");
       }
     };
 
