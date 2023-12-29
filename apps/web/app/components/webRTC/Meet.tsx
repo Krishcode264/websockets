@@ -1,21 +1,23 @@
 "use client";
+import { User } from "core";
+import { Offer } from "core";
+import { Candidate } from "core";
 import React, { useEffect } from "react";
 import "./Meet.css";
 import { useState } from "react";
 import io from "socket.io-client";
-import WebrtcConnection from "./WebrtcConnection";
-import { UserDetail } from "./UserDetail";
-import { UserForm } from "./UserForm";
-import { User } from "ui/types/types";
-import { Offer } from "ui/types/types";
-import { Candidate } from "ui/types/types";
+import WebrtcConnection from "./webrtc-connection";
+import { UserForm } from "./userform";
+import { UserDetail } from "./userdetail";
+import Call from "./call";
 import { Socket } from "socket.io-client";
-import Call from "./Call";
 
-export type offer = { sdp?: string; type: "offer" };
+export interface OfferSdp {
+  sdp?: string;
+  type: "offer";
+}
 export const Meet = () => {
   type ConnectedUsers = User[] | [];
-
   const [showform, setShowForm] = useState<boolean>(false);
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUsers>([]);
   const [user, setUser] = useState<User>({ name: "", id: "" });
@@ -23,31 +25,31 @@ export const Meet = () => {
   const [showWEBrtcConnection, setShowWEBrtcConnection] = useState(false);
   const [persontoHandshake, setPersontoHandshake] = useState<User | null>(null);
   const [showCall, setShowCall] = useState(false);
-  const [offer, setOffer] = useState<offer | null>(null);
+  const [offer, setOffer] = useState<OfferSdp | null | undefined>(null);
   const configForPeerconnection = {
     echoCancellation: true,
     iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }],
   };
-  const [peerConnection, setPeerConnection] = useState<RTCPeerConnection>(
+  const [peerConnection] = useState<RTCPeerConnection>(
     new RTCPeerConnection(configForPeerconnection)
   );
 
-//  peerConnection.onicegatheringstatechange = () => {
-//     console.log("ICE gathering state:", peerConnection.iceGatheringState);
+  //  peerConnection.onicegatheringstatechange = () => {
+  //     console.log("ICE gathering state:", peerConnection.iceGatheringState);
 
-//     if (peerConnection.iceGatheringState === "complete") {
-//       // ICE gathering is complete, check if any candidates were gathered
-//       const localCandidates =
-//         peerConnection.localDescription?.sdp.match(/a=candidate:(.*)/g);
-//       if (!localCandidates || localCandidates.length === 0) {
-//         console.log("No ICE candidates gathered.");
-//         // Handle the scenario where no ICE candidates were gathered
-//       } else {
-//         console.log("ICE candidates gathered:", localCandidates);
-//         // ICE candidates were gathered successfully
-//       }
-//     }
-//   };
+  //     if (peerConnection.iceGatheringState === "complete") {
+  //       // ICE gathering is complete, check if any candidates were gathered
+  //       const localCandidates =
+  //         peerConnection.localDescription?.sdp.match(/a=candidate:(.*)/g);
+  //       if (!localCandidates || localCandidates.length === 0) {
+  //         console.log("No ICE candidates gathered.");
+  //         // Handle the scenario where no ICE candidates were gathered
+  //       } else {
+  //         console.log("ICE candidates gathered:", localCandidates);
+  //         // ICE candidates were gathered successfully
+  //       }
+  //     }
+  //   };
   // useEffect(() => {
   //   console.log("peer conection status from user detail", peerConnection.connectionState);
   // }, [peerConnection.connectionState]);
@@ -55,41 +57,54 @@ export const Meet = () => {
   //function to create offer
 
   const createOffer = async () => {
-    let offer = await peerConnection.createOffer();
-    peerConnection.setLocalDescription(offer);
-
-    return offer;
+    try {
+      const createdOffer = await peerConnection.createOffer();
+      peerConnection.setLocalDescription(createdOffer);
+      return createdOffer;
+    } catch (error) {
+      // Handle the error if needed
+      console.error("Error creating offer:", error);
+      throw error; // Optional: rethrow the error to propagate it
+    }
   };
 
   const createAnswer = async () => {
-    let answer = await peerConnection.createAnswer();
-    peerConnection.setLocalDescription(answer);
-
-    return answer;
+    try {
+      const createdanswer = await peerConnection.createAnswer();
+      peerConnection.setLocalDescription(createdanswer);
+      console.log("offer created on peerconnection");
+      return createdanswer;
+    } catch (error) {
+      console.error("Error creating offer:", error);
+      throw error; // Optionally rethrow the error to propagate it
+    }
   };
   //function to make request for video call to another client
-  const emitUserRequestForVideoCall = async (requestedUser: User) => {
-    let offer = await createOffer();
+  const emitUserRequestForVideoCall = async (
+    requestedUser: User
+  ): Promise<void> => {
+    const offercreated = await createOffer();
     setPersontoHandshake(() => requestedUser);
-    console.log("guest from emituserrequest", persontoHandshake);
-    if (socket && offer) {
-      socket.emit("receivedOfferForRTC", { offer, requestedUser, user });
+    // console.log("guest from emituserrequest", persontoHandshake);
+    if (socket !== null) {
+      socket.emit("receivedOfferForRTC", { offercreated, requestedUser, user });
     }
   };
 
   //updates user from user form component
-  const updateUser = (user: User) => {
-    setUser(user);
+  const updateUser = (usertoupdate: User) => {
+    setUser(usertoupdate);
   };
 
   const renderConnectedUsers = () => {
-    return connectedUsers.map((user: User) => {
+    return connectedUsers.map((connecteduser: User): JSX.Element => {
       return (
         <UserDetail
-          persontoHandshake={persontoHandshake && persontoHandshake?.id}
+          persontoHandshake={persontoHandshake?.id}
           peerConnectionStatus={peerConnection.connectionState}
-          id={user.id}
-          name={user.name}
+          id={connecteduser.id}
+          key={connecteduser.id}
+          name={connecteduser.name}
           emitUserRequestForVideoCall={emitUserRequestForVideoCall}
         />
       );
@@ -99,31 +114,28 @@ export const Meet = () => {
   //ice candidate exchnage
 
   peerConnection.onicecandidate = (event) => {
-    
-    console.log("onicecandidate event is running");
-    if(peerConnection.remoteDescription){
-
-      console.log("actul ice candidates shared now ")
-         if (event.candidate && persontoHandshake && socket != null) {
-           let candidate = event.candidate;
-           socket.emit("candidate", { candidate, persontoHandshake, user });
-           console.log("can sent ");
-         }
+    // console.log("onicecandidate event is running");
+    if (peerConnection.remoteDescription) {
+      // console.log("actul ice candidates shared now ");
+      if (event.candidate && persontoHandshake && socket !== null) {
+        const candidate = event.candidate;
+        socket.emit("candidate", { candidate, persontoHandshake, user });
+        console.log("candidate  sent ");
+      }
     }
- 
   };
 
   const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
       try {
-        const socket = io("http://localhost:8080", {
+        const newsocket = io("http://localhost:8080", {
           path: "/socket",
           transports: ["websocket"],
         });
-        setSocket(socket);
+        setSocket(newsocket);
 
-        socket.emit("welcomeUser", newUser);
-        console.log("promise resolved ");
+        newsocket.emit("welcomeUser", newUser);
+        // console.log("promise resolved ");
         resolve();
       } catch (err) {
         console.log("error in connect to socket", err);
@@ -136,30 +148,46 @@ export const Meet = () => {
   // console.log("peer connecvtion state change",peerConnection.connectionState)
   //   }
 
-  const handleAccept = async () => {
-    setShowCall(()=>false)
+  const handleAccept = async (): Promise<void> => {
+    setShowCall(() => false);
+    console.log(offer);
     if (offer) {
-      peerConnection.setRemoteDescription(offer);
+      await new Promise<void>((resolve, reject) => {
+        peerConnection
+          .setRemoteDescription(offer)
+          .then(async () => {
+            const answer = await createAnswer();
+            socket?.emit("getCreateAnswerFromRequestedUser", {
+              answer,
+              receivedUser: persontoHandshake,
+            });
 
-      let answer = await createAnswer();
+            resolve(); // Resolve the outer promise when setRemoteDescription completes
+          })
+          .catch((error) => {
+            reject(error); // Reject the outer promise if there's an error
+          });
+      });
 
-      if (answer) {
-        console.log(
-          "created  and sent sdp answer after getting offer  , both local and remote : done "
-        );
-        let receivedUser = persontoHandshake;
-        socket?.emit("getCreateAnswerFromRequestedUser", {
-          answer,
-          receivedUser,
-        });
-      }
+      // try {
+      //   peerConnection.setRemoteDescription(offer);
+      //   const answer = await createAnswer();
+      //   socket?.emit("getCreateAnswerFromRequestedUser", {
+      //     answer,
+      //     receivedUser: persontoHandshake,
+      //   });
+      //   console.log(
+      //     "created  and sent sdp answer after getting offer  , both local and remote : done "
+      //   );
+      // } catch (err) {
+      //   console.log(err, "error in accepting call");
+      // }
     }
   };
 
-  const handleReject = () => {
-
-    setPersontoHandshake(()=>null)
-    setOffer(()=>null)
+  const handleReject = (): void => {
+    setPersontoHandshake(() => null);
+    setOffer(() => null);
   };
 
   useEffect(() => {
@@ -173,62 +201,52 @@ export const Meet = () => {
         });
       });
       socket.on("newUserConnected", (newUserData: User) => {
-        console.log(connectedUsers,newUserData)
-   setConnectedUsers((prevUsers) => {
-     if (prevUsers.length===0) {
-       return [newUserData];
-
-     } else {
-           return [...prevUsers, newUserData];
-     }
-   });
+        // console.log(connectedUsers, newUserData);
+        setConnectedUsers((prevUsers) => {
+          if (prevUsers.length === 0) {
+            return [newUserData];
+          }
+          return [...prevUsers, newUserData];
+        });
       });
       socket.on("userDisconnected", (disconncetdUserdata: User) => {
         setConnectedUsers((prevUser) =>
-          prevUser.filter((user) => user.id !== disconncetdUserdata.id)
+          prevUser.filter(
+            (userinconnection) => userinconnection.id !== disconncetdUserdata.id
+          )
         );
       });
 
       socket.on(
         "receivedOfferForRTC",
-        async ({ user: receivedUser, offer }: Offer) => {
+        ({ user: receivedUser, offer: offerreceived }: Offer) => {
           console.log(
             "updatation of persontohandshake at socket event ",
             receivedUser
           );
 
-          setOffer(() => offer);
+          setOffer(() => offerreceived);
           setPersontoHandshake(() => receivedUser);
           setShowCall(true);
 
           //send back localdescription.createanswer to client via socket event
         }
       );
-      socket.on(
-        "receivedAnswerToRTC",
-        async ({ answer, receivedUser }: Offer) => {
-          try {
-            await peerConnection.setRemoteDescription(answer);
-            console.log(
-              "after adding answer to peerconnection, both remote /local done "
-            );
-          } catch (err) {
-            console.log(err, "err updating asnwer to remote staate");
-          }
-        }
-      );
-      socket.on("candidate", ({ candidate, user: guest }: Candidate) => {
-        console.log(
-          "candidate event running we got ice can ",
-          candidate,
-          guest
-        );
-        console.log("guest:", persontoHandshake, "user :", user);
+      socket.on("receivedAnswerToRTC", async ({ answer }: Offer) => {
+        await peerConnection.setRemoteDescription(answer);
+      });
+      socket.on("candidate", async ({ candidate }: Candidate) => {
+        console.log("candidate event running we got ice can ", candidate);
+        // console.log("guest:", persontoHandshake, "user :", user);
         // if (persontoHandshake && persontoHandshake.id == guest.id) {
         console.log("id matched for ice candidate exchnage");
-        if(peerConnection.remoteDescription){
-
-        peerConnection.addIceCandidate(candidate);
+        if (peerConnection.remoteDescription) {
+          try {
+            await peerConnection.addIceCandidate(candidate);
+          } catch (error) {
+            // Handle the error if the ice candidate couldn't be added
+            console.error("Error adding ice candidate:", error);
+          }
         }
 
         // }
@@ -239,8 +257,13 @@ export const Meet = () => {
   return (
     <div>
       <h1>Join room </h1>
-      {socket == null && (
-        <button className="join_room" onClick={() => setShowForm(true)}>
+      {socket === null && (
+        <button
+          className="join_room"
+          onClick={() => {
+            setShowForm(true);
+          }}
+        >
           Join
         </button>
       )}

@@ -98,3 +98,15 @@ border-radius: 12px;
     margin: 20px 100px;
     justify-content: space-between;
 }
+.getUser_media_btn{
+    margin: auto;
+
+
+    filter:drop-shadow(20px,20px,2px,red);
+}
+.getUser_media_btn >button{
+    width: 100%;
+    height: 100%;
+        font-weight: 700;
+   padding: 24px;
+}

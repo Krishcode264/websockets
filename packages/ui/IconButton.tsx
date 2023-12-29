@@ -7,16 +7,19 @@ type IconBtnProps = {
   icon: React.ComponentType<SvgIconProps>;
   br: string;
   color?:string;
+  size?:number;
+  
 };
-export const IconBtn:React.FC<IconBtnProps> = ({ bg,color, icon:IconComponent, br }) => {
+export const IconBtn:React.FC<IconBtnProps> = ({ bg,color,size, icon:IconComponent, br }) => {
   const styles = {
     backgroundColor: bg,
     borderRadius: br,
+    cursor:"pointer",
     color:color ? color:"white"
   };
   return (
     <span style={styles}>
-      <Icon sx={{color}} component={IconComponent} />
+      <Icon sx={{color,fontSize:size}} component={IconComponent} />
     </span>
   );
 };

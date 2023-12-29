@@ -1,15 +1,23 @@
 
-
+import { IconBtn } from "ui";
 import React from 'react'
 import './Front.css'
 import Link from "next/link";
-import Call from './components/webRTC/Call';
+import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
+
 
 const page = () => {
 
   return (
     <div>
-      <h1 className='head'>welcome to world of real talks</h1>
+      <header className="header_top_section">
+        <h1 className="head">welcome to world of real talks</h1>
+        <Link href='/profile'>
+       
+          <IconBtn icon={Person2RoundedIcon} br="20px" size={40} />
+        </Link>
+      </header>
+
       <section className="rooms-wrapper">
         <div className="section video-room">
           <p>Here you can have one to one video call with connected people</p>
@@ -25,7 +33,6 @@ const page = () => {
           </Link>
         </div>
       </section>
-
     </div>
   );
 }

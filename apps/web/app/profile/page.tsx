@@ -1,11 +1,9 @@
 import React from 'react'
-import { Meet } from '../components/webRTC/meet'
 
 const page = () => {
   return (
-    <Meet/>
-
-  )  
+    <div>prodile pagepage</div>
+  )
 }
 
 export default page
