@@ -19,7 +19,12 @@ export const UserDetail:React.FC<UserDetailProps> = ({
 // console.log("user detail compont render ")
 
 // useEffect(()=>{
-
+const handleClickForcall=(obj:User)=>{
+  emitUserRequestForVideoCall(obj)
+  .catch((err)=>{
+    console.log(err,"err in emit user req for video call")
+  })
+}
 // },[peerConnectionStatus])
 
   return (
@@ -28,7 +33,7 @@ export const UserDetail:React.FC<UserDetailProps> = ({
 
       <button
         disabled={persontoHandshake===id}
-        onClick={async()=>{ await emitUserRequestForVideoCall({ name, id })}}
+        onClick={()=>{handleClickForcall({name,id})}}
       >
         { persontoHandshake === id
           ? "in a call"
