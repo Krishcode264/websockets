@@ -1,7 +1,7 @@
 import React from "react";
 import { User } from "../../../types/types";
 
-import "./mediaStream.css";
+import "./MediaStream.css";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
 import MicOffIcon from "@mui/icons-material/MicOff";
