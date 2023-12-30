@@ -1,7 +1,7 @@
 
 import { IconBtn } from "./components/core_components/icon-button";
 import React from 'react'
-import './Front.css'
+import './front.css'
 import Link from "next/link";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 

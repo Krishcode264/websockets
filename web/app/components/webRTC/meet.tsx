@@ -1,7 +1,7 @@
 "use client";
 import {User,Candidate,Offer} from '../../types/types'
 import React, { useEffect } from "react";
-import "./Meet.css";
+import "./meet.css";
 import { useState } from "react";
 import io from "socket.io-client";
 import WebrtcConnection from "./webrtc-connection";
