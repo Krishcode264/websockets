@@ -1,4 +1,4 @@
-import { Candidate, Offer, User } from "../../packages/core/types/types";
+import { Candidate, Offer, User } from "./types/types";
 import { Socket } from "socket.io";
 import http from "http";
 
@@ -11,7 +11,7 @@ import {
   findUserById,
   saveUserData,
 } from "./mongoose/model/userModel";
-import { UserSchemaType } from "core";
+import { UserSchemaType } from "./types/types";
 import { getAllUsers } from "./mongoose/model/userModel";
 dotenv.config();
 

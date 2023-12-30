@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
-import { User } from "core";
+import { User } from "../../types/types";
 import { Socket } from "socket.io-client";
 import LoginIcon from "@mui/icons-material/Login";
-import { IconBtn } from "ui";
+import { IconBtn } from "../core_components/icon-button";
 type HandleSocketConnection = (newUser: User) => Promise<void>;
 
 interface UserFormprops {

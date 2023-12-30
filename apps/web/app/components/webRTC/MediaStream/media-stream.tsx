@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "core";
+import { User } from "../../../types/types";
 
 import "./mediaStream.css";
 import VideocamIcon from "@mui/icons-material/Videocam";

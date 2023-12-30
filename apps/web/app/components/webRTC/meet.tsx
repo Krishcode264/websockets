@@ -1,7 +1,5 @@
 "use client";
-import { User } from "core";
-import { Offer } from "core";
-import { Candidate } from "core";
+import {User,Candidate,Offer} from '../../types/types'
 import React, { useEffect } from "react";
 import "./Meet.css";
 import { useState } from "react";
@@ -216,7 +214,7 @@ if(peerConnection){
         });
       });
       socket.on("userDisconnected", (disconncetdUserdata: User) => {
-        setConnectedUsers((prevUser) =>
+        setConnectedUsers((prevUser:User[]) =>
           prevUser.filter(
             (userinconnection) => userinconnection.id !== disconncetdUserdata.id
           )

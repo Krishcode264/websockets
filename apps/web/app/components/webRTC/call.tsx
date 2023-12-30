@@ -1,7 +1,7 @@
 
-import { User } from "core";
-import { IconBtn } from "ui";
-import React from "react";
+import { User } from "../../types/types";
+import React from 'react'
+import { IconBtn } from "../core_components/icon-button";
 import "./Call.css";
 import CallIcon from "@mui/icons-material/Call";
 import CallEndIcon from "@mui/icons-material/CallEnd";

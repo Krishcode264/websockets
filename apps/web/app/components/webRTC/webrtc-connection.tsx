@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "./Meet.css";
 import './MediaStream/MediaStream.css'
-import { User } from "core/types/types";
+import { User } from "../../types/types";
 import MediaStream from "./MediaStream/media-stream";
 import MediaStreamGuest from "./MediaStream/media-stream-guest";
 

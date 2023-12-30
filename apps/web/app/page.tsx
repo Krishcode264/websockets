@@ -1,5 +1,5 @@
 
-import { IconBtn } from "ui";
+import { IconBtn } from "./components/core_components/icon-button";
 import React from 'react'
 import './Front.css'
 import Link from "next/link";

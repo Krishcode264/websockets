@@ -1,5 +1,5 @@
 
-import { User } from "core";
+import { User } from "../../types/types";
 
 interface UserDetailProps {
   peerConnectionStatus: string|undefined; // Replace with the specific type for peerConnectionStatus
