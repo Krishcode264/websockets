@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import "./MediaStream.css";
+import "./media-stream.css";
 import { VideoComponent, AudioComponent } from "./media-stream-component";
 const MediaStreamGuest = ({
   remoteStream,
