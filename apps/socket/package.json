@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon index",
+    "prod":"node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "mongoose": "^8.0.3",
     "nodemon": "^3.0.2",
     "socket.io": "^4.7.2"
+    
   },
   "devDependencies": {
     "@types/mongoose": "^5.11.97"
