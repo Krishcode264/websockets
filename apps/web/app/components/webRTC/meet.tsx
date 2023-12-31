@@ -134,10 +134,13 @@ if(peerConnection){
   const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
       try {
-        const newsocket = io("http://localhost:8080", {
-          path: "/socket",
-          transports: ["websocket"],
-        });
+        const newsocket = io(
+          "http://ec2-13-51-146-164.eu-north-1.compute.amazonaws.com:8080/",
+          {
+            path: "/socket",
+            transports: ["websocket"],
+          }
+        );
         setSocket(newsocket);
 
         newsocket.emit("welcomeUser", newUser);

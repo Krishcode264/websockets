@@ -1,9 +1,14 @@
 import { Candidate, Offer, User } from "../../packages/core/types/types";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import http from "http";
+import  express from "express";
 
-import { Server } from "socket.io";
-const httpServer = http.createServer();
+import cors from 'cors'
+import bodyParser from "body-parser";
+const app = express();
+app.use(cors());
+app.use(express.json())
+const httpServer = http.createServer(app);
 import { connectMongo } from "./mongoose/connectMongo";
 import dotenv from "dotenv";
 import {
@@ -16,7 +21,8 @@ import { getAllUsers } from "./mongoose/model/userModel";
 dotenv.config();
 
 //to allow cross origin policy so that it can accept request from any url
-
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
 const io = new Server(httpServer, { path: "/socket" });
 
 
@@ -117,6 +123,12 @@ function socketioConnection() {
 }
 const uri = process.env.MONGO_URI;
 
+
+app.get('/',(req,res)=>{
+  console.log("got req")
+
+  res.send("hii req is getting")
+})
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
