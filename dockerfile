@@ -7,22 +7,17 @@ COPY package.json ./
 
 COPY yarn.lock  ./
 
-COPY packages/ packages/
+COPY /apps/socket/package.json ./socket/package.json
 
 RUN yarn install
- 
-# Copy the docs package.json
-COPY apps/web/package.json ./apps/web/package.json
- 
-RUN cd apps/web && yarn install
- 
-# Copy app source
-COPY . .
- 
-EXPOSE 3000
 
-RUN cd apps/socket && yarn install
+COPY /apps/socket  ./socket
 
-RUN yarn build
+RUN cd socket && yarn add -D typescript
+
+RUN cd socket && yarn build
+
+CMD [ "node","socket/index.js" ]
  
-CMD [ "yarn", "dev" ]
+
+
