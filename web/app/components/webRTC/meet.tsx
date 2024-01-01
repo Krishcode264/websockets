@@ -132,7 +132,7 @@ if(peerConnection){
   const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
       try {
-        const newsocket = io("http://localhost:8080", {
+        const newsocket = io("http://16.171.0.192/", {
           path: "/socket",
           transports: ["websocket"],
         });
@@ -292,7 +292,7 @@ if(peerConnection){
         <>
           <h2>connected people</h2>
           <div className="connected_people_wrapper">
-            {connectedUsers.length > 0 ? (
+            {connectedUsers?.length > 0 ? (
               renderConnectedUsers()
             ) : (
               <h3>there is no one joined this room</h3>

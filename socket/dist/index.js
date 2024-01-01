@@ -14,13 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
-const httpServer = http_1.default.createServer();
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const connectMongo_1 = require("./mongoose/connectMongo");
 const dotenv_1 = __importDefault(require("dotenv"));
 const userModel_1 = require("./mongoose/model/userModel");
 const userModel_2 = require("./mongoose/model/userModel");
 dotenv_1.default.config();
 //to allow cross origin policy so that it can accept request from any url
+const app = (0, express_1.default)();
+const httpServer = http_1.default.createServer(app);
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
 const io = new socket_io_1.Server(httpServer, { path: "/socket" });
 function socketioConnection() {
     io.on("connection", (socket) => __awaiter(this, void 0, void 0, function* () {
@@ -91,7 +96,12 @@ function socketioConnection() {
     }));
 }
 const uri = process.env.MONGO_URI;
-httpServer.listen(8080, () => {
+const port = process.env.PORT;
+app.get("/", (req, res) => {
+    console.log("req got");
+    res.send("got the req thank you");
+});
+httpServer.listen(port || 3000, () => {
     console.log("server is listening on port 8080");
     socketioConnection();
     if (uri) {
