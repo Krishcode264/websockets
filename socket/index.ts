@@ -125,7 +125,7 @@ function socketioConnection() {
 const uri = process.env.MONGO_URI;
 const port=process.env.PORT;
 
-app.get("/",(req:Request,res:Response)=>{
+app.get("/api",(req:Request,res:Response)=>{
   console.log("req got")
   res.send("got the req thank you")
 })
