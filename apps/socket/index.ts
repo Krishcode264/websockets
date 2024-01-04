@@ -115,13 +115,10 @@ function socketioConnection() {
     );
   });
 }
-const uri = process.env.MONGO_URI;
 
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
+  connectMongo();
 
-  if (uri) {
-    connectMongo(uri);
-  }
 });

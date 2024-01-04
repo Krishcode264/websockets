@@ -1,14 +1,10 @@
 
 
 import mongoose from 'mongoose';
-import { ConnectOptions } from 'mongoose';
 
-export const connectMongo = async (uri:string): Promise<void> => {
+export const connectMongo = async (): Promise<void> => {
   try {
-    await mongoose.connect(uri!, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as ConnectOptions);
+    await mongoose.connect("mongodb://localhost:27017/SocketUsers");
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("Connection error:", error);
