@@ -135,7 +135,7 @@ if(peerConnection){
     return new Promise((resolve, rejecet) => {
       try {
         const newsocket = io(
-          "http://ec2-13-51-146-164.eu-north-1.compute.amazonaws.com:8080/",
+          "http://localhost:8080",
           {
             path: "/socket",
             transports: ["websocket"],

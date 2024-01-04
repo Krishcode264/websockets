@@ -121,7 +121,7 @@ function socketioConnection() {
     );
   });
 }
-const uri = process.env.MONGO_URI;
+const uri = "mongodb://localhost:27017/SocketUsers";
 
 
 app.get('/',(req,res)=>{
@@ -132,8 +132,6 @@ app.get('/',(req,res)=>{
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
-
-  if (uri) {
-    connectMongo(uri);
-  }
+    connectMongo();
+  
 });

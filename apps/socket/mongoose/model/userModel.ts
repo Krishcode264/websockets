@@ -10,7 +10,9 @@ export const saveUserData = async (
   try {
     const newUser = new UserData({ ...data });
     const savedUser = await newUser.save();
+       console.log("new user saved ");
     return savedUser;
+ 
   } catch (err) {
     console.log(err, "err saving connected socket user");
     return null;

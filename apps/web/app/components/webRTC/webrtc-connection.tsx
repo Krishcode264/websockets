@@ -58,6 +58,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        console.log("got the permission fro video audio")
         setDefaultdisabledTracks(stream);
         setTracksAdded(() => true);
       })
