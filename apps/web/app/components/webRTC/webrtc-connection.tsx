@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "./Meet.css";
@@ -5,7 +6,8 @@ import './MediaStream/MediaStream.css'
 import { User } from "core/types/types";
 import MediaStream from "./MediaStream/media-stream";
 import MediaStreamGuest from "./MediaStream/media-stream-guest";
-
+import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
+import { IconBtn } from "ui";
 interface WebrtcConnectionProps {
   persontoHandshake: User | null;
   peerConnection: RTCPeerConnection|null;
@@ -106,8 +108,9 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
         </div>
       ) : (
         <div className="getUser_media_btn">
+          <h4>You need to give Permission before starting a call</h4>
           <button onClick={getUserMediaStream}>
-            click to give Permissions for audio video
+           <IconBtn icon={VideoSettingsIcon} size={46} color="orange" br="12px"/> 
           </button>
         </div>
       )}

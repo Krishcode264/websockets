@@ -74,6 +74,7 @@ h1,h2,h3{
     align-items: center;
     justify-content: space-around;
     gap: 12px;
+ 
 }
 
 .video{
@@ -94,19 +95,37 @@ border-radius: 12px;
     border-radius: 12px;
     padding: 12px 24px;
     color: white;
+    margin: 24px auto;
     background-color: rgba(44, 98, 168, 0.558);
-    margin: 20px 100px;
+    /* margin: 20px 100px; */
     justify-content: space-between;
+}
+
+
+@media (width<700px) {
+    .connected_people_wrapper{
+        width: 85%;
+    }
 }
 .getUser_media_btn{
     margin: auto;
-
-
+     background-color: rgba(255, 254, 254, 0.97); 
+      width: 200px;
+      height: 200px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction:column;
+      align-items: center;
+      padding: 23px;
+      font-size: 21px;
+      justify-content: space-between;
     filter:drop-shadow(20px,20px,2px,red);
 }
+.getUser_media_btn>h4{
+    font-size: 21px;
+    font-weight: 800;
+    color:orange;
+}
 .getUser_media_btn >button{
-    width: 100%;
-    height: 100%;
-        font-weight: 700;
-   padding: 24px;
+ 
 }

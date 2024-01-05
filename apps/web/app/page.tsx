@@ -1,4 +1,4 @@
-
+"use client "
 import { IconBtn } from "ui";
 import React from 'react'
 import './Front.css'
@@ -33,6 +33,7 @@ const page = () => {
           </Link>
         </div>
       </section>
+
     </div>
   );
 }
