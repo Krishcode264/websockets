@@ -19,8 +19,9 @@ export const VideoComponent: React.FC<MediaProps> = ({
         videoref.current
           ?.play()
           .catch((err) => {
+             console.log("error while playing video on loaded metatdata", err);
             throw err
-  console.log("error while playing video on loaded metatdata", err);
+ 
           }
           
           );
@@ -44,8 +45,9 @@ const audioref = useRef<HTMLAudioElement>(null);
           ?.play()
           .catch((err) =>
           {
-            throw err
              console.log("error while playing video on loaded metatdata", err);
+            throw err
+            
           }
            
           );
