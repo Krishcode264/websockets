@@ -12,6 +12,7 @@ const MediaStreamGuest = ({
 
   useEffect(() => {
     if (remoteStream) {
+      console.log("we are inside guest vudei and we got remote stream ",remoteStream.getTracks())
       remoteStream.getTracks().forEach((track) => {
         if (track.kind === "audio") {
           setAudio(true);

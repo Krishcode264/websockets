@@ -38,6 +38,13 @@ video-room > p {
   justify-content: center;
   gap: 20px;
 }
+
+@media (width<520px) {
+  
+  .rooms-wrapper{
+    flex-direction: column;
+  }
+}
 .enter-room-btn {
   border-radius: 2px;
   padding: 8px;

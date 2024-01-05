@@ -46,6 +46,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
       setVideo(() => false);
     });
     // console.log(peerConnection.getSenders());
+    console.log("stream after track.enable=false ",stream.getTracks())
     setMediaStreamAll(() => stream);
   };
 
@@ -73,6 +74,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
     if(peerConnection){
     peerConnection.ontrack = (e: RTCTrackEvent) => {
       const rm = e.streams[0];
+      console.log("remote strem ontract event",rm)
       if (rm) {
         setRemoteStream(() => rm);
         // console.log(rm.getTracks(), "tracks from webrtc newly got");
@@ -100,13 +102,12 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
             peerConnectionStatus={peerConnection?.connectionState}
           />
 
-          <MediaStreamGuest remoteStream={remoteStream} />
+          {remoteStream && <MediaStreamGuest remoteStream={remoteStream} />}
         </div>
       ) : (
         <div className="getUser_media_btn">
-      
           <button onClick={getUserMediaStream}>
-           click to give Permissions for audio video
+            click to give Permissions for audio video
           </button>
         </div>
       )}
