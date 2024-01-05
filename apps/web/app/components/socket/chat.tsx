@@ -1,6 +1,6 @@
 import React from 'react'
 
-import './Chat.css'
+import './chat.css'
 import ChatRoomTemplate from './chat-room-template';
 
 const Chat = () => {
@@ -46,7 +46,7 @@ return (<ChatRoomTemplate key={room.id} id={room.id} title={room.title} descript
 
   return (
     <div>
-      <h1>select room to enter:</h1>
+      <h1 style={{color:"whitesmoke",marginBottom:"24px"}}>Select Room</h1>
       <main>{generateChatRooms()}</main>
     </div>
   );

@@ -1,6 +1,8 @@
+"use client"
 import React from 'react'
 import { useState } from 'react'
-import {Link} from 'react-router-dom'
+import Link from 'next/link';
+import './chat.css'
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 interface ChatRoomTemplateprops{
@@ -32,15 +34,15 @@ setHovered((prev)=>!prev)
       onMouseLeave={handleHover}
     >
       {hovered && (
-        <Link to={`/chat/id=${id}`}>
+        <Link href={`/chat-room/id=${id}`}>
           <div className="enter_button">
-            <AddCircleIcon sx={{ fontSize: 30 }} />
+            <AddCircleIcon sx={{ fontSize: 40 }} />
           </div>
         </Link>
       )}
       <h2>{title}</h2>
       <section>
-        <span>Description</span>
+   
         <h4>{description}</h4>
       </section>
       <div className="audiance_type">{generateAudiance()}</div>

@@ -40,7 +40,7 @@ h1{
 font-family: 'Nunito', sans-serif;
 font-weight: 700;
 }
-p{
+p,h4,h3,h2{
   font-family: "Nunito",sans-serif;
-  font-weight: 500;
+
 }
