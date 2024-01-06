@@ -1,46 +1,84 @@
-*{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Nunito", sans-serif;
 }
 
-body{
-  background-color: rgb(12, 12, 76);
-  /* background-image: linear-gradient(rgb(14, 14, 52),rgb(35, 33, 127)); */
+body {
+  background-color: var(--primary-color1);
   margin: 0px;
-  padding: 10px;
+  min-width: 100vh;
+  min-height: 100vh;
+  padding: var(--padding1);
 }
 
-Link{
-    display: block;
+Link,
+video,
+img {
+  display: block;
 }
 
+:root {
+  --primary-color1: #e0ecf47a;
+  --primary-color2: #cfcae456;
+  --primary-color3: #fcfcfc;
 
+  --secondary-color:#000000;
+  --text-color1: #22032de9;
+  --text-color2: rgba(12, 1, 17, 0.632);
+  --text-color3: rgba(21, 3, 28, 0.197);
 
+  --padding1: 16px;
+  --padding2: 8px;
+  --padding3: 2px;
+  --btn-padding:8px 4px;
+  --margin1: 16px;
+  --margin2: 8px;
+  --margin3: 2px;
+  --border-radius1: 16px;
+  --border-radius2: 8px;
+  --border-radius3: 2px;
+  --font-size1: 24px;
+  --font-size2: 20px;
+  --font-size3: 18px;
 
-input , button {
+  --box-shadow1: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  --box-shadow2: 0, 4px, 2px, rgba(0, 0, 0, 0.6);
+  --box-shadow3: 0, 4px, 2px, rgba(0, 0, 0, 0.4);
+
+  /* Add more vḍḍḍḍḍḍariables as needed */
+}
+
+input,
+button,
+textarea {
   outline: none;
   border: none;
 }
-Link,a{
-text-decoration: none;
-color: inherit;
+Link,
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-button{
+button {
   padding: 8px 4px;
   border-radius: 5px;
   cursor: pointer;
 }
 
-
-h1{
-
-font-family: 'Nunito', sans-serif;
-font-weight: 700;
+h1 {
+  font-family: "Nunito", sans-serif;
+  color: var(--text-color1);
 }
-p,h4,h3,h2{
-  font-family: "Nunito",sans-serif;
 
+h2 {
+  font-weight: 800;
+}
+h3 {
+  font-weight: 700;
+}
+h4 {
+  font-weight: 600;
 }

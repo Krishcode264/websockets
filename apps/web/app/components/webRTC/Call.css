@@ -8,23 +8,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  /* transform: translateX(50%); */
-  border-radius: 8px;
+  /* border-radius: 8px; */
 top: 0;
 left: 10%;
   
-  /* border: 2px solid yellow; */
-  background-color: rgb(4, 0, 3);
+
 }
 .accept_decline {
   display: flex;
-  padding: 12px;
-  gap: 20px;
   align-items: center;
   justify-content: space-evenly;
-
-
-  
 }
 .accept_decline > button {
 
@@ -35,11 +28,11 @@ left: 10%;
 }
 
 .accept{
-background-color: rgb(98, 195, 98);
+/* background-color: rgb(98, 195, 98); */
 }
 
 .decline{
-background-color: rgba(232, 76, 76, 0.721);
+/* background-color: rgba(232, 76, 76, 0.721); */
 }
 @keyframes size {
 
@@ -53,5 +46,5 @@ filter: brightness(0.7);
   
 }
 .caller_info {
-  color: whitesmoke;
+
 }

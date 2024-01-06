@@ -13,7 +13,6 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.1",
     "@mui/material": "^5.15.1",
-    "@radix-ui/react-toast": "^1.1.5",
     "@types/uuid": "^9.0.7",
     "core": "*",
     "next": "^14.0.4",

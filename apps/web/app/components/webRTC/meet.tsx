@@ -18,7 +18,7 @@ export interface OfferSdp {
 }
 export const Meet = () => {
   type ConnectedUsers = User[] | [];
-  const [showform, setShowForm] = useState<boolean>(false);
+  const [showform, setShowForm] = useState<boolean>(true);
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUsers>([]);
   const [user, setUser] = useState<User>({ name: "", id: "" });
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -263,18 +263,8 @@ if(peerConnection){
   return (
     <div>
       <h1>Join room </h1>
-      {socket === null && (
-        <button
-          className="join_room"
-          onClick={() => {
-            setShowForm(true);
-          }}
-        >
-          Join
-        </button>
-      )}
-
-      {showform && (
+      {socket === null && 
+     showform && (
         <UserForm
           handleSocketConnection={handleSocketConnection}
           setShowForm={setShowForm}
@@ -282,6 +272,9 @@ if(peerConnection){
           socket={socket}
         />
       )}
+      
+
+     
 
       {showCall && persontoHandshake && (
         <Call
@@ -292,7 +285,7 @@ if(peerConnection){
       )}
       {socket && (
         <>
-          <h2>connected people</h2>
+          
           <div className="connected_people_wrapper">
             {connectedUsers.length > 0 ? (
               renderConnectedUsers()

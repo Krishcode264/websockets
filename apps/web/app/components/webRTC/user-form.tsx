@@ -67,8 +67,8 @@ export const UserForm: React.FC<UserFormprops> = ({
         placeholder="enter your name"
       />
       <button onClick={handleSaveUserForm}>
-        <p>save</p>
-        <IconBtn icon={LoginIcon} br="50%" color="green" />
+      join
+        {/* <IconBtn icon={LoginIcon} br="50%" color="white" /> */}
       </button>
     </div>
   );

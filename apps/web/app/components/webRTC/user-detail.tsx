@@ -1,4 +1,4 @@
-
+import '../webRTC/meet.css'
 import { User } from "core";
 
 interface UserDetailProps {
@@ -29,7 +29,7 @@ const handleClickForcall=(obj:User)=>{
 
   return (
     <section key={id} className="user_detail">
-      <h1>{name}</h1>
+      <h2>{name}</h2>
 
       <button
         disabled={persontoHandshake===id}

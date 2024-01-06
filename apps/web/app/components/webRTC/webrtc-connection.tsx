@@ -8,6 +8,8 @@ import MediaStream from "./MediaStream/media-stream";
 import MediaStreamGuest from "./MediaStream/media-stream-guest";
 import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
 import { IconBtn } from "ui";
+import CameraIcon from "@mui/icons-material/Camera";
+import MicIcon from "@mui/icons-material/Mic";
 interface WebrtcConnectionProps {
   persontoHandshake: User | null;
   peerConnection: RTCPeerConnection|null;
@@ -108,10 +110,12 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
         </div>
       ) : (
         <div className="getUser_media_btn">
-          <h4>You need to give Permission before starting a call</h4>
-          <button onClick={getUserMediaStream}>
-           <IconBtn icon={VideoSettingsIcon} size={46} color="orange" br="12px"/> 
-          </button>
+          we need acces to your camera and microphone
+          <div>
+            <CameraIcon sx={{ fontSize: "33px" }} />
+            <MicIcon sx={{ fontSize: "33px" }} />
+          </div>
+          <button onClick={getUserMediaStream}>Grant access</button>
         </div>
       )}
     </div>
