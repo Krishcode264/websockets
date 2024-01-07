@@ -3,7 +3,7 @@ import { User } from "core";
 import { Offer } from "core";
 import { Candidate } from "core";
 import React, { useEffect } from "react";
-import "./Meet.css";
+import "./meet.css";
 import { useState } from "react";
 import io from "socket.io-client";
 import WebrtcConnection from "./webrtc-connection";
