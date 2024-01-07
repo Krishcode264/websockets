@@ -1,4 +1,4 @@
-import '../webRTC/meet.css'
+
 import { User } from "core";
 
 interface UserDetailProps {

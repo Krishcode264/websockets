@@ -1,13 +1,11 @@
 
 import React, { useEffect } from "react";
 import { useState } from "react";
-import "./Meet.css";
+import "./meet.css";
 import './MediaStream/MediaStream.css'
 import { User } from "core/types/types";
 import MediaStream from "./MediaStream/media-stream";
 import MediaStreamGuest from "./MediaStream/media-stream-guest";
-import VideoSettingsIcon from "@mui/icons-material/VideoSettings";
-import { IconBtn } from "ui";
 import CameraIcon from "@mui/icons-material/Camera";
 import MicIcon from "@mui/icons-material/Mic";
 interface WebrtcConnectionProps {
