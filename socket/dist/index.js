@@ -96,13 +96,21 @@ function socketioConnection() {
     }));
 }
 const uri = process.env.MONGO_URI;
-const port = process.env.PORT;
 app.get("/", (req, res) => {
     console.log("req got");
     res.send("got the req thank you");
 });
-httpServer.listen(port || 3000, () => {
+function run() {
+    fetch("https://krishcode264.shop")
+        .then(res => {
+        console.log(res);
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+httpServer.listen(8080, () => {
     console.log("server is listening on port 8080");
+    run();
     socketioConnection();
     if (uri) {
         (0, connectMongo_1.connectMongo)(uri);

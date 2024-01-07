@@ -123,15 +123,24 @@ function socketioConnection() {
   });
 }
 const uri = process.env.MONGO_URI;
-const port=process.env.PORT;
 
-app.get("/api",(req:Request,res:Response)=>{
+
+app.get("/",(req:Request,res:Response)=>{
   console.log("req got")
   res.send("got the req thank you")
 })
 
-httpServer.listen(port ||3000, () => {
-  console.log("server is listening on port ",port);
+function run(){
+fetch("https://krishcode264.shop",{methode:})
+.then(res=>{
+  console.log(res)
+}).catch((err)=>{
+  console.log(err)
+})
+}
+httpServer.listen(8080, () => {
+  console.log("server is listening on port 8080");
+  run()
   socketioConnection();
 
   if (uri) {

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index",
     "prod": "node index",
-    "start": "tsc && node dist/index.js",
+    "start": "tsc && node  dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
