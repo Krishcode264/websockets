@@ -134,7 +134,7 @@ if(peerConnection){
   const handleSocketConnection = (newUser: User): Promise<void> => {
     return new Promise((resolve, rejecet) => {
       try {
-        const newsocket = io("https://www.krishcode264.shop", {
+        const newsocket = io("https://krishcode264.shop", {
           path: "/socket",
           transports: ["websocket"],
         });
