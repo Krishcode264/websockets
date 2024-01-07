@@ -2,7 +2,7 @@
 import { User } from "core";
 import { IconBtn } from "ui";
 import React from "react";
-import "./Call.css";
+import "./call.css";
 import CallIcon from "@mui/icons-material/Call";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 interface CallProps {
