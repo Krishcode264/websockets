@@ -4,8 +4,6 @@ import http from "http";
 import { Server } from "socket.io";
 import express,{Request,Response} from 'express'
 import cors from 'cors'
-
-import bodyParser from "body-parser";
 import { connectMongo } from "./mongoose/connectMongo";
 import dotenv from "dotenv";
 import {
@@ -130,17 +128,8 @@ app.get("/",(req:Request,res:Response)=>{
   res.send("got the req thank you")
 })
 
-function run(){
-fetch("https://krishcode264.shop",{methode:})
-.then(res=>{
-  console.log(res)
-}).catch((err)=>{
-  console.log(err)
-})
-}
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
-  run()
   socketioConnection();
 
   if (uri) {

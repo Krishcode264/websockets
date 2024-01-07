@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:alpine
 
 WORKDIR /
 
@@ -12,10 +12,14 @@ RUN yarn install
 
 RUN yarn global add typescript
 
+RUN yarn global add pm2
 
 COPY . .
 
+RUN tsc
+
 EXPOSE 8080
 
-CMD ["yarn", "start"]
+CMD ["pm2-runtime", "start", "dist/index.js"]
+
 
