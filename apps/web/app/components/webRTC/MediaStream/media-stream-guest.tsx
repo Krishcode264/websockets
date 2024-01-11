@@ -2,14 +2,12 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import "./MediaStream.css";
 import { VideoComponent, AudioComponent } from "./media-stream-component";
-const MediaStreamGuest = ({
-  remoteStream,
-}: {
-  remoteStream: MediaStream | null;
-}) => {
+import { useRecoilValue } from "recoil";
+import { mediaStreamState } from "../../../store/atoms/media-stream-atom";
+const MediaStreamGuest:React.FC = () => {
   const [audio, setAudio] = useState(false);
   const [video, setVideo] = useState(false);
-
+const {remoteStream}=useRecoilValue(mediaStreamState)
   useEffect(() => {
     if (remoteStream) {
       console.log("we are inside guest vudei and we got remote stream ",remoteStream.getTracks())

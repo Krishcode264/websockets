@@ -1,110 +1,86 @@
-
 import React, { useEffect } from "react";
 import { useState } from "react";
-import "./meet.css";
-import './MediaStream/MediaStream.css'
-import { User } from "core/types/types";
+import "./meet/meet.css";
+import "./MediaStream/MediaStream.css";
 import MediaStream from "./MediaStream/media-stream";
 import MediaStreamGuest from "./MediaStream/media-stream-guest";
 import CameraIcon from "@mui/icons-material/Camera";
 import MicIcon from "@mui/icons-material/Mic";
-interface WebrtcConnectionProps {
-  persontoHandshake: User | null;
-  peerConnection: RTCPeerConnection|null;
-  peerConnectionStatus: string|undefined;
-};
+import { useRecoilState, useRecoilValue } from "recoil";
+import { peerConnectionState } from "../../store/selectors/pc-selector";
+import { remoteStreamState } from "../../store/selectors/media-state-selector";
 
-const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
-  persontoHandshake,
-  peerConnection,
-  peerConnectionStatus,
-}) => {
-  const [remoteStream, setRemoteStream] = useState<null | MediaStream>(null);
-  const [video, setVideo] = useState(false);
-  const [audio, setAudio] = useState(false);
-  const [mediaStreamAll, setMediaStreamAll] = useState<MediaStream | null>(
-    null
-  );
+import { useSetRecoilState } from "recoil";
+import { mediaStreamState } from "../../store/atoms/media-stream-atom";
+import { showComponentState } from "../../store/atoms/show-component";
+import { useMediaPermissionAccess } from "./hooks/useMediaPermissionAccess";
+
+const WebrtcConnection = () => {
   const [tracksAdded, setTracksAdded] = useState(false);
+  const peerConnection = useRecoilValue(peerConnectionState);
+  const [remoteStream, setRemoteStream] = useRecoilState(remoteStreamState);
+  const [{mediaStream}, setMediaStreamAll] = useRecoilState(mediaStreamState);
+  const setShowComponent = useSetRecoilState(showComponentState);
+ const {video,audio}=useMediaPermissionAccess();
 
-  const toggleTracks = (type: string) => {
-    peerConnection?.getSenders().forEach((sender: RTCRtpSender) => {
-      if (sender.track?.kind === type) {
-        sender.track.enabled = !sender.track.enabled;
-        type === "audio"
-          ? setAudio((prev) => !prev)
-          : setVideo((prev) => !prev);
-      }
-      // console.log(peerConnection.getSenders(), "senderes");
-    });
-  };
 
-  const setDefaultdisabledTracks = (stream: MediaStream) => {
-    stream.getTracks().forEach((track) => {
-      track.enabled = false;
-
-      peerConnection?.addTrack(track, stream);
-      setAudio(() => false);
-      setVideo(() => false);
-    });
-    // console.log(peerConnection.getSenders());
-    console.log("stream after track.enable=false ",stream.getTracks())
-    setMediaStreamAll(() => stream);
-  };
 
   const getUserMediaStream = () => {
-    if (tracksAdded) {
-      return; // Already added tracks
-    }
+    const setDefaultdisabledTracks = (stream: MediaStream) => {
+      stream.getTracks().forEach((track) => {
+        track.enabled = false;
+        peerConnection?.addTrack(track, stream);
+      });
+      // console.log(peerConnection.getSenders());
+      console.log("stream after track.enable=false ", stream.getTracks());
+      setMediaStreamAll((prev) => ({
+        ...prev,
+        mediaStream: stream,
+        video: false,
+        audio: false,
+      }));
 
-    // console.log("getuser media runnig ");
+      setTracksAdded(() => true);
+    };
+
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setDefaultdisabledTracks(stream);
-        setTracksAdded(() => true);
       })
-      .catch((err) =>{
-        // console.log(err)
-        throw(err);
-      } );
+      .catch((err) => {
+        throw err;
+      });
   };
+  useEffect(()=>{
+    console.log(video,audio)
+   if (
+     audio === "granted" ||
+     video === "granted" 
+   ) {
+     getUserMediaStream();
+   }
+  },[audio,video])
 
   useEffect(() => {
-    // console.log("peer status chn aged and webrtc componet render happen");
-
-    if(peerConnection){
-    peerConnection.ontrack = (e: RTCTrackEvent) => {
-      const rm = e.streams[0];
-      console.log("remote strem ontract event",rm)
-      if (rm) {
-        setRemoteStream(() => rm);
-        // console.log(rm.getTracks(), "tracks from webrtc newly got");
-      }
-    };
-
-    // return () => {
-    //   peerConnection.ontrack = null;
-    // };
+ 
+    if (peerConnection) {
+      peerConnection.ontrack = (e: RTCTrackEvent) => {
+        const rm = e.streams[0];
+        console.log("remote strem ontract event", rm);
+        if (rm) {
+          setRemoteStream(rm);
+        }
+      };
     }
-
-  }, [peerConnectionStatus, peerConnection]);
+  }, [peerConnection]);
 
   return (
     <div className="webrtc_template max_mode">
-      {tracksAdded ? (
+      {mediaStream  ? (
         <div className="video_wrappers">
-          <MediaStream
-            mediaStreamAll={mediaStreamAll}
-            video={video}
-            audio={audio}
-            toggleTracks={toggleTracks}
-            persontoHandshake={persontoHandshake}
-            peerConnection={peerConnection}
-            peerConnectionStatus={peerConnection?.connectionState}
-          />
-
-          {remoteStream && <MediaStreamGuest remoteStream={remoteStream} />}
+          <MediaStream />
+          {remoteStream && <MediaStreamGuest />}
         </div>
       ) : (
         <div className="getUser_media_btn">
@@ -116,6 +92,7 @@ const WebrtcConnection: React.FC<WebrtcConnectionProps> = ({
           <button onClick={getUserMediaStream}>Grant access</button>
         </div>
       )}
+
     </div>
   );
 };

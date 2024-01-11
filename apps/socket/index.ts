@@ -1,9 +1,9 @@
-import { Candidate, Offer, User } from "../../packages/core/types/types";
+import { Candidate, Offer, User } from "core";
 import { Socket } from "socket.io";
 import http from "http";
-
 import { Server } from "socket.io";
-const httpServer = http.createServer();
+import express, { Request, Response } from "express";
+import cors from "cors";
 import { connectMongo } from "./mongoose/connectMongo";
 import dotenv from "dotenv";
 import {
@@ -17,9 +17,12 @@ dotenv.config();
 
 //to allow cross origin policy so that it can accept request from any url
 
+const app = express();
+const httpServer = http.createServer(app);
+app.use(cors());
+app.use(express.json());
+
 const io = new Server(httpServer, { path: "/socket" });
-
-
 
 function socketioConnection() {
   io.on("connection", async (socket: Socket) => {
@@ -59,8 +62,8 @@ function socketioConnection() {
     //making RTCP handshake
     socket.on(
       "receivedOfferForRTC",
-      async ({ offercreated:offer, requestedUser, user }: Offer) => {
-        console.log("got   step 1 : got offer ", requestedUser, user);
+      async ({createdOffer:offer, requestedUser, user }: Offer) => {
+        console.log("got   step 1 : got offer ", offer);
         if (requestedUser) {
           findUserById(requestedUser.id).then((socketID) => {
             if (socketID) {
@@ -115,10 +118,16 @@ function socketioConnection() {
     );
   });
 }
+const uri = process.env.MONGO_URI;
+
+app.get("/", (req: Request, res: Response) => {
+  console.log("req got");
+  res.send("got the req thank you");
+});
 
 httpServer.listen(8080, () => {
   console.log("server is listening on port 8080");
   socketioConnection();
-  connectMongo();
-
+    connectMongo();
+  
 });

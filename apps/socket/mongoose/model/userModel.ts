@@ -38,7 +38,7 @@ export const getAllUsers = async () => {
   }
 };
 
-export const findUserById = async (id: string): Promise<string | null> => {
+export const findUserById = async (id: string): Promise<string | null|undefined> => {
   try {
     const targetUser: UserSchemaType | null = await UserData.findOne({ id });
 

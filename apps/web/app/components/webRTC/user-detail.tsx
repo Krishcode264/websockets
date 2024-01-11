@@ -1,44 +1,64 @@
-
 import { User } from "core";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  connectedUsersState,
+} from "../../store/atoms/socket-atom";
+import { guestState } from "../../store/atoms/guest-atom";
+import { peerConnectionState } from "../../store/selectors/pc-selector";
+import { userInfoState } from "../../store/selectors/user-selector";
+import { useContext } from "react";
+import SocketContext from "../../context/context";
+const UserDetail = ({ id, name }: User) => {
+  const [{persontoHandshake}, setPersontoHandshake] = useRecoilState(guestState);
+   const socket=useContext(SocketContext)
+  const peerConnection = useRecoilValue(peerConnectionState);
+  const user = useRecoilValue(userInfoState);
+  const createOffer = async () => {
+    try {
+      const createdOffer = await peerConnection?.createOffer();
+      await peerConnection?.setLocalDescription(createdOffer);
+      return createdOffer;
+    } catch (error) {
+      // Handle the error if needed
+      console.error("Error creating offer:", error);
+      throw error; // Optional: rethrow the error to propagate it
+    }
+  };
 
-interface UserDetailProps {
-  peerConnectionStatus: string|undefined; // Replace with the specific type for peerConnectionStatus
-  persontoHandshake: string|null|undefined; // Replace with the specific type for persontoHandshake
-  name: string;
-  id: string;
-  emitUserRequestForVideoCall: (user:User) =>Promise<void>;
-};
+  const emitUserRequestForVideoCall = async (
+    requestedUser: User
+  ): Promise<void> => {
+  console.log(socket,'soxket from emit user req ')
 
-export const UserDetail:React.FC<UserDetailProps> = ({
-  // peerConnectionStatus,
-  persontoHandshake,
-  name,
-  id,
-  emitUserRequestForVideoCall,
-}) => {
-// console.log("user detail compont render ")
-
-// useEffect(()=>{
-const handleClickForcall=(obj:User)=>{
-  emitUserRequestForVideoCall(obj)
-  .catch((err)=>{
-    console.log(err,"err in emit user req for video call")
-  })
-}
-// },[peerConnectionStatus])
+    const createdOffer = await createOffer();
+    setPersontoHandshake(() =>({persontoHandshake: requestedUser}));
+    // console.log("guest from emituserrequest", persontoHandshake);
+    if (socket !== null && createdOffer) {
+        console.log("socket is preset here is offer ",createdOffer)
+      socket.emit("receivedOfferForRTC", { createdOffer, requestedUser, user });
+    }
+  };
 
   return (
     <section key={id} className="user_detail">
       <h2>{name}</h2>
 
       <button
-        disabled={persontoHandshake===id}
-        onClick={()=>{handleClickForcall({name,id})}}
+     
+        onClick={() => {
+          emitUserRequestForVideoCall({ name, id });
+        }}
       >
-        { persontoHandshake === id
-          ? "in a call"
-          : "start a video call"}
+        {persontoHandshake.id === id ? "in a call" : "start a video call"}
       </button>
     </section>
   );
+};
+
+export const RenderConnectedUsers = () => {
+  const { connectedUsers } = useRecoilValue(connectedUsersState);
+
+  return connectedUsers.map((connecteduser: User): JSX.Element => {
+    return <UserDetail name={connecteduser.name} id={connecteduser.id} />;
+  });
 };

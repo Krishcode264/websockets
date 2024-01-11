@@ -1,74 +1,33 @@
 import { v4 as uuidv4 } from "uuid";
-import { useEffect, useState } from "react";
-import { User } from "core";
-import { Socket } from "socket.io-client";
+import {  useState } from "react";
+import {  useSetRecoilState } from "recoil";
+import { updateUser} from "../../store/selectors/user-selector";
+import { showComponentState } from "../../store/atoms/show-component";
+export const UserForm: React.FC = () => {
+  const [name, setName] = useState("");
 
-type HandleSocketConnection = (newUser: User) => Promise<void>;
+  const setUser = useSetRecoilState(updateUser);
+  const setShowComponent = useSetRecoilState(showComponentState);
 
-interface UserFormprops {
-  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
-  handleSocketConnection: HandleSocketConnection;
-  updateUser: (user: User) => void;
-  socket: Socket | null;
-}
-export const UserForm: React.FC<UserFormprops> = ({
-  setShowForm,
-  handleSocketConnection,
-  updateUser,
-  socket,
-}) => {
-  const [user, setUser] = useState<User>({ name: "", id: uuidv4() });
 
   const handleSaveUserForm = () => {
-    // console.log("handle save user form is running ");
-
-    if (!user.name) {
-      // window.alert("enter name ");
+    if (name === "") {
       return;
     }
-    // console.log(socket ,"running from start bfunction to initiallize the ")
-    // if(socket){
-    updateUser(user);
-    handleSocketConnection(user)
-      .then(() => {
-        setShowForm((prev) => !prev);
-        setUser({ name: "", id: uuidv4() });
-      })
-      .catch((err) => {
-        throw err;
-        //  console.error("error connecting to socket", err);
-      });
 
-    // } else{
-    // //   console.log(socket)
-    // //     setShowForm(false)
-    // //     window.alert("there is some issue connecting ... try after some time ")
-    // //    }
+    setShowComponent((prev) => ({ ...prev, showform: false ,showWebrtcConnection:true}));
+    setUser((prev) => ({ ...prev, name, id: uuidv4() }));
   };
-  useEffect(() => {
-    // console.log(socket,"socket from uiser form")
-    return () => {
-      // setUser("")
-    };
-  }, [socket]);
+
   return (
     <div className="user_form">
       <input
         type="text"
-        // autoFocus={true}
-        onChange={(e) => {
-          setUser((prevUser: User) => ({
-            ...prevUser,
-            name: e.target.value,
-          }));
-        }}
-        value={user.name}
+        onChange={(e) => setName(()=> e.target.value)}
+        value={name}
         placeholder="enter your name"
       />
-      <button onClick={handleSaveUserForm}>
-      join
-        {/* <IconBtn icon={LoginIcon} br="50%" color="white" /> */}
-      </button>
+      <button onClick={handleSaveUserForm}>join</button>
     </div>
   );
 };
